@@ -1,0 +1,31 @@
+.root {
+  padding: 16px;
+  height: 100%;
+  background: #2b2b2c;
+  position: relative;
+}
+
+.title {
+  background: linear-gradient(180deg, #2dd5c450 45%, #2dd5c4 65%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+  text-align: center;
+  font-weight: 500;
+  font-size: 54px;
+}
+
+.menuContainer {
+  width: 400px;
+}
+
+.btn {
+  margin-top: 32px;
+  padding: 8px;
+  background: #00afa3;
+  width: 100%;
+  border: 2px solid #2dd5c4;
+  border-radius: 99px;
+  font-size: 18px;
+  color: white;
+}

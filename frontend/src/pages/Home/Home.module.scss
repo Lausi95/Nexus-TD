@@ -1,0 +1,25 @@
+.root {
+  padding: 16px;
+  height: 100%;
+  background: #2b2b2c;
+}
+
+.title {
+  background: linear-gradient(180deg, #2dd5c450 45%, #2dd5c4 65%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn {
+  &:global(.MuiButton-root) {
+    padding: 8px 16px;
+    min-width: 350px;
+    background: #00afa3;
+    border: 2px solid #2dd5c4;
+    border-radius: 4px;
+    color: white;
+  }
+}

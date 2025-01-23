@@ -1,0 +1,5 @@
+export enum RELIC_TYPE {
+  ACTIVE = 'ACTIVE',
+  PASSIVE = 'PASSIVE',
+  HIDDEN = 'HIDDEN',
+}

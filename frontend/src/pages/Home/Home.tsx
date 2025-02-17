@@ -8,7 +8,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const handleGoSelection = () => {
-    navigate('/Selection');
+    navigate('/Game');
   };
 
 

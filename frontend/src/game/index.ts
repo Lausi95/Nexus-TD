@@ -8,7 +8,9 @@ export const setContext = (newContext: any) => {
 };
 
 const startEngine = () => {
-  const canvas = <HTMLCanvasElement>document.getElementById('gameScreen-canvas');
+  const canvas = <HTMLCanvasElement>(
+    document.getElementById('gameScreen-canvas')
+  );
 
   if (canvas) {
     context = canvas.getContext('2d');

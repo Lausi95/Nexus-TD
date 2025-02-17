@@ -10,6 +10,11 @@ import store from '../../redux/store';
 import { Relic } from '../types/Relic.ts';
 import { COLOR } from '../enum/colors.ts';
 import { getMinMax } from 'utils/getMinMax.ts';
+import Arena from 'game/engine/arena.ts';
+import BasicEnemy from 'game/entities/attackers/basic_enemy.ts';
+import BasicDefender from 'game/entities/defenders/basic_defender.ts';
+import AttackerObject from 'game/engine/AttackerObject.ts';
+import GameplayController from 'game/engine/gameplayController.ts';
 
 type GameProps = {
   canvasWidth: number;
@@ -20,13 +25,18 @@ export default class Game {
   level: number;
   dev: boolean;
   gameObjects: GameObject[];
+  attackerObjects: AttackerObject[];
+  projection: GameObject | null;
+  // defenderObjects:
   // particleObjects: Trail[];
   canvas: GameProps;
   gameState: GAME_STATE;
   now: number;
   spawner: Spawner;
   hud: Hud;
+  arena: Arena;
   inputHandler: InputHandler;
+  gameplayController: GameplayController;
   birthday: number;
   timeScale: number; // 1 means normal, 2 means half the speed etc
   keyLastTimePressed: number;
@@ -46,6 +56,8 @@ export default class Game {
      * particleObject -> Player usually cannot interact with
      */
     this.gameObjects = [];
+    this.attackerObjects = [];
+    this.projection = null;
 
     // this.particleObjects = [];
 
@@ -54,26 +66,28 @@ export default class Game {
     this.spawner = new Spawner({ game: this });
     //this.menu = new Menu(this, this.spawner);
     this.hud = new Hud({ game: this });
+    this.arena = new Arena({ game: this });
+    this.gameplayController = new GameplayController({ game: this });
     this.now = Date.now();
 
     // TESTING
     // this.menu.playGame(this.level);
 
     this.inputHandler = new InputHandler({ game: this });
-    this.inputHandler.initEvents();
     this.timeScale = 1;
     this.keyLastTimePressed = this.now;
     this.updateTimeCounter = 0;
   }
 
   //This function runs once per reload of the page
-  start(level: number, relic: Relic | null) {
+  start(level: number) {
     // Cleaning up any leftovers
     this.emptyReset();
-    console.log('⛳️ LEVEL STARTED', level, relic);
+    console.log('⛳️ LEVEL STARTED', level);
     this.togglePause(GAME_STATE.PLAYING);
     this.level = level;
     this.spawner.startLevel(this.level);
+    this.inputHandler.initEvents();
   }
 
   setGameState(gameState: GAME_STATE) {
@@ -83,6 +97,7 @@ export default class Game {
 
   close() {
     this.gameObjects = [];
+    this.attackerObjects = [];
     // this.particleObjects = [];
     // this.gameState = GAME_STATE.CLOSED;
     this.setGameState(GAME_STATE.CLOSED);
@@ -97,28 +112,20 @@ export default class Game {
 
   emptyReset() {
     // Resting all the variables
-    this.gameObjects = [];
+    this.gameObjects = [
+      // new BasicDefender({ game: this, placeholderPosition: [7, 4] }),
+      //new BasicDefender({ game: this, placeholderPosition: [10, 6] }),
+      //new BasicDefender({ game: this, placeholderPosition: [4, 7] }),
+    ];
+    this.attackerObjects = [];
     // this.particleObjects = [];
     this.spawner.reset();
   }
 
   clearEnemies() {
-    for (let i = 0; i < this.gameObjects.length; i++) {
-      if (
-        this.gameObjects[i].gameObject.id === ENTITY_ID.BASIC_ENEMY ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.VENOM ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.SHADOW_AURA ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.MAGNET_AURA_MINUS ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.MAGNET_AURA_MINUS ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.INFERNO_WALL ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.SNOWFLAKE ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.FROSTY ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.HACKER ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.REAPER
-      ) {
-        this.gameObjects.splice(i, 1);
-        i--;
-      }
+    for (let i = 0; i < this.attackerObjects.length; i++) {
+      this.attackerObjects.splice(i, 1);
+      i--;
     }
   }
 
@@ -126,7 +133,6 @@ export default class Game {
     this.gameState = gameState;
     // store.dispatch(setGameState(this.gameState));
   }
-
 
   dispatchVictory(_stars: number) {
     this.setGameState(GAME_STATE.PAGE_VICTORY);
@@ -155,31 +161,31 @@ export default class Game {
     if (this.gameState === GAME_STATE.PLAYING) {
       this.now = Date.now();
 
-
       if (this.updateTimeCounter % this.timeScale === 0) {
         // this.particleObjects.forEach((object) => object.update(deltaTime));
         this.gameObjects.forEach((object) => object.update(deltaTime));
+        this.attackerObjects.forEach((object) => object.update(deltaTime));
       }
 
       this.updateTimeCounter++;
       this.spawner.update(deltaTime);
+      this.arena.update(deltaTime);
       this.hud.update(deltaTime);
+      // if(this.projection){
+      //   this.projection.update(deltaTime)
+      // }
     }
   }
 
   draw(context: CanvasRenderingContext2D) {
-    if (this.gameObjects.find((obj) => obj.gameObject.id === ENTITY_ID.SHADOW_BOSS)) {
-      const gradient = context.createLinearGradient(0, 20, 0, this.canvas.canvasHeight);
-
-      gradient.addColorStop(0, COLOR.BLACK + '00');
-      gradient.addColorStop(0.1, COLOR.BLACK + '70');
-      gradient.addColorStop(0.8, COLOR.BLACK);
-      gradient.addColorStop(1, COLOR.BLACK);
-
-      // Use the gradient to fill the rectangle
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, this.canvas.canvasWidth, this.canvas.canvasHeight);
+    // this.particleObjects.forEach((object) => object.draw(context));
+    // this.playerParticleObjects.forEach((object) => object.draw(context));
+    this.arena.draw(context);
+    this.gameObjects.forEach((object) => object.draw(context));
+    this.attackerObjects.forEach((object) => object.draw(context));
+    this.hud.draw(context);
+    if (this.projection) {
+      this.projection.draw(context);
     }
-
-}
+  }
 }

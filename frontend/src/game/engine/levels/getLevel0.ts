@@ -1,28 +1,26 @@
-// import { playText } from 'redux/slices/vfxSlice.ts';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
-import Star from '../../entities/star';
-import {sec} from "../../../utils/deltaTime.ts";
+import { sec } from 'utils/deltaTime.ts';
+import BasicEnemy from 'game/entities/attackers/basic_enemy.ts';
 
 export const level0Stars: Stars = [3, 15, 30];
 
 export const getLevel0 = (game: Game): null => {
   if (game.spawner.executionSequence === 0) {
     if (game.spawner.roundTimer === sec(0.1)) {
-      // store.dispatch(playText(['LEVEL 0', 'Dev']));
-      // game.gameObjects.push(
-      //   new BipolarEnemy({
-      //     game,
-      //     position: { x: 10, y: 40 },
-      //   }),
-      // );
+      game.attackerObjects.push(new BasicEnemy({ game }));
+    } else if (game.spawner.roundTimer === sec(0.5)) {
+      game.attackerObjects.push(new BasicEnemy({ game }));
     } else if (game.spawner.roundTimer === sec(1)) {
-      game.gameObjects.push(
-        new Star({
-          game,
-          position: { x: game.canvas.canvasWidth / 2 - 20, y: 50 },
-        }),
-      );
+      game.attackerObjects.push(new BasicEnemy({ game }));
+    } else if (game.spawner.roundTimer === sec(1.5)) {
+      game.attackerObjects.push(new BasicEnemy({ game }));
+    } else if (game.spawner.roundTimer === sec(2)) {
+      game.attackerObjects.push(new BasicEnemy({ game }));
+    } else if (game.spawner.roundTimer === sec(2.5)) {
+      game.attackerObjects.push(new BasicEnemy({ game }));
+    } else if (game.spawner.roundTimer === sec(3)) {
+      game.attackerObjects.push(new BasicEnemy({ game }));
     }
   }
   return null;

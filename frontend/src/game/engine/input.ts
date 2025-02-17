@@ -1,44 +1,12 @@
 import Game from './game';
+import BasicDefender from 'game/entities/defenders/basic_defender.ts';
 
 type InputHandlerProps = {
   game: Game;
 };
 
-export enum KEY_BINDINGS {
-  ARROWS = 'ARROWS',
-  AWSD = 'AWSD',
-}
-
-const arrowsBindings = ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'KeyQ'];
-const awsdBindings = ['KeyA', 'KeyW', 'KeyD', 'KeyS', 'KeyL'];
-
-export const isKeyBindingsArrows = () => {
-  return localStorage.getItem('keyBindings') === KEY_BINDINGS.ARROWS;
-};
-
 const keyDownEvents = (event: any, game: Game) => {
-  const actualBinding = isKeyBindingsArrows() ? arrowsBindings : awsdBindings;
-
   switch (event.code) {
-    case actualBinding[0]:
-      game.keyPressed();
-      game.player.moveLeft();
-      break;
-    case actualBinding[1]:
-      game.keyPressed();
-      game.player.moveUp();
-      break;
-    case actualBinding[2]:
-      game.keyPressed();
-      game.player.moveRight();
-      break;
-    case actualBinding[3]:
-      game.keyPressed();
-      game.player.moveDown();
-      break;
-    case actualBinding[4]:
-      game.player.relicManager.useActiveRelic();
-      break;
     case 'Space':
       game.togglePause();
       break;
@@ -48,42 +16,74 @@ const keyDownEvents = (event: any, game: Game) => {
   }
 };
 
+// @ts-ignore
 const keyUpEvents = (event: any, game: Game) => {
-  const actualBinding = isKeyBindingsArrows() ? arrowsBindings : awsdBindings;
-
   switch (event.code) {
-    case actualBinding[0]:
-      game.keyPressed();
-      if (game.player.gameObject.velX < 0) game.player.stopX();
-      break;
-    case actualBinding[1]:
-      game.keyPressed();
-      if (game.player.gameObject.velY < 0) game.player.stopY();
-      break;
-    case actualBinding[2]:
-      game.keyPressed();
-      if (game.player.gameObject.velX > 0) game.player.stopX();
-      break;
-    case actualBinding[3]:
-      game.keyPressed();
-      if (game.player.gameObject.velY > 0) game.player.stopY();
-      break;
   }
+};
+
+const handleClick = (event: MouseEvent, canvas: any, game: Game) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  console.log(`Click detected at: (${x}, ${y})`);
+  game.gameplayController.handleClick(x, y);
+};
+
+const handleMove = (event: MouseEvent, canvas: any, game: Game) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  // console.log(`Move detected at: (${x}, ${y})`);
+  game.gameplayController.handleMove(x, y);
 };
 
 export default class InputHandler {
   game: Game;
   constructor({ game }: InputHandlerProps) {
     this.game = game;
+
+    this.keyDownHandler = this.keyDownHandler.bind(this);
+    this.keyUpHandler = this.keyUpHandler.bind(this);
+    this.clickHandler = this.clickHandler.bind(this);
+    this.moveHandler = this.moveHandler.bind(this);
+  }
+
+  clickHandler(event: MouseEvent) {
+    const canvas = document.getElementById('gameScreen-canvas');
+    handleClick(event, canvas, this.game);
+  }
+
+  moveHandler(event: MouseEvent) {
+    const canvas = document.getElementById('gameScreen-canvas');
+    handleMove(event, canvas, this.game);
+  }
+
+  keyUpHandler(event: any) {
+    keyUpEvents(event, this.game);
+  }
+
+  keyDownHandler(event: any) {
+    keyUpEvents(event, this.game);
   }
 
   initEvents() {
-    document.addEventListener('keydown', (event) => keyDownEvents(event, this.game));
-    document.addEventListener('keyup', (event) => keyUpEvents(event, this.game));
+    this.terminate();
+    document.addEventListener('keydown', this.keyDownHandler);
+    document.addEventListener('keyup', this.keyUpHandler);
+
+    const canvas = document.getElementById('gameScreen-canvas');
+    canvas?.addEventListener('click', this.clickHandler);
+    canvas?.addEventListener('mousemove', this.moveHandler);
   }
 
   terminate() {
-    document.removeEventListener('keydown', (event) => keyDownEvents(event, this.game));
-    document.removeEventListener('keyup', (event) => keyUpEvents(event, this.game));
+    document.removeEventListener('keydown', this.keyDownHandler);
+    document.removeEventListener('keyup', this.keyUpHandler);
+
+    const canvas = document.getElementById('gameScreen-canvas');
+    canvas?.removeEventListener('click', this.clickHandler);
   }
 }

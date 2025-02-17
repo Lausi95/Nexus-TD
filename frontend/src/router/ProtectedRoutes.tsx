@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from '../pages/Home/Home.tsx';
+import Game from "../pages/Game.tsx";
 
 const ProtectedRoutes: React.FC<unknown> = () => {
   // const dispatch: AppDispatch = useDispatch();
@@ -62,7 +63,8 @@ const ProtectedRoutes: React.FC<unknown> = () => {
   return (
     <Routes>
       <Route path="/Home" element={<Home />} />
-      <Route path="/" element={<Navigate to="/Home" replace />} />
+        <Route path="/Game" element={<Game />} />
+        <Route path="/" element={<Navigate to="/Home" replace />} />
       <Route path="*" element={<Navigate to="/Home" replace />} />
     </Routes>
   );

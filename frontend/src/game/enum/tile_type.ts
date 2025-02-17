@@ -1,0 +1,4 @@
+export enum TILE_TYPE {
+  TRACK = 'TRACK',
+  PLACEHOLDER = 'PLACEHOLDER',
+}

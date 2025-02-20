@@ -1,8 +1,8 @@
-import Game from './game';
+import Game from './Game.ts';
 import store from '../../redux/store';
 import { getSec, sec } from 'utils/deltaTime.ts';
 import { setCurrentTimer } from 'redux/slices/gameSlice.ts';
-import { getLevel0, level0Stars } from './levels/getLevel0';
+import { getLevel0 } from './levels/getLevel0';
 
 type SpawnerProps = {
   game: Game;
@@ -13,7 +13,6 @@ export default class Spawner {
   executionSequence: number;
   roundTimer: number;
   chaosRoundTimer: number;
-  levelStars: number[][];
   timerInterval: number;
   constructor({ game }: SpawnerProps) {
     this.game = game;
@@ -22,7 +21,6 @@ export default class Spawner {
     this.roundTimer = 0; // Through calculations 1 sec of real Time is about roundTimer = 60
     this.chaosRoundTimer = 0;
     this.timerInterval = 0;
-    this.levelStars = [level0Stars];
   }
 
   reset() {

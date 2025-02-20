@@ -1,6 +1,6 @@
 import { ENTITY_ID } from 'game/enum/entitiy_id.ts';
 import { COLOR } from 'game/enum/colors.ts';
-import Game from 'game/engine/game.ts';
+import Game from 'game/engine/Game.ts';
 import AttackerObject from 'game/engine/AttackerObject.ts';
 
 type TProps = {
@@ -12,15 +12,27 @@ const getVelocityTilesPerSecond = (vel: number) => {
   return vel * 40;
 };
 
+const getPosition = (startingPlaceholder: [number, number]) => {
+  if (startingPlaceholder[0] === 0) {
+    return { x: -40, y: startingPlaceholder[1] * 40 + 10 };
+  } else if (startingPlaceholder[1] === 0) {
+    return { x: startingPlaceholder[0] * 40 + 10, y: -40 };
+  }
+  return { x: 0, y: 0 };
+};
+
 export default class BasicEnemy extends AttackerObject {
-  constructor({ game, position = { x: 0, y: 0 } }: TProps) {
+  constructor({ game, position }: TProps) {
     super({
       id: ENTITY_ID.BASIC_ENEMY,
-      position,
-      velocity: getVelocityTilesPerSecond(1.5),
+      position: position || getPosition(game.arena.loadedTrack[0]),
+      velocity: getVelocityTilesPerSecond(2),
       hp: 100,
       nextTrack: null,
       numberTrack: 0,
+      damage: 10,
+      gold: 10,
+      platinum: 1,
       game,
     });
   }

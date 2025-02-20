@@ -1,7 +1,8 @@
 import { ENTITY_ID } from '../enum/entitiy_id';
-import { Rectangle } from '../types/Rectangle';
-import Game from 'game/engine/game.ts';
+import Game from 'game/engine/Game.ts';
 import TrackTile from 'game/entities/tiles/TrackTile.ts';
+import store from 'redux/store.ts';
+import { earnGold, earnPlatinum } from 'redux/slices/gameSlice.ts';
 
 type TProps = {
   game: Game;
@@ -9,7 +10,10 @@ type TProps = {
   position: { x: number; y: number };
   velocity: number;
   hp: number;
+  damage: number;
   numberTrack: number;
+  gold: number;
+  platinum: number;
   nextTrack: TrackTile | null;
 };
 
@@ -23,7 +27,16 @@ export default abstract class AttackerObject {
   }
 
   abstract update(deltaTime: number): void;
-  abstract draw(g: any): void;
+  abstract draw(context: any): void;
+
+  destruct() {
+    store.dispatch(earnGold(this.gameObject.gold));
+    store.dispatch(earnPlatinum(this.gameObject.platinum));
+    this.gameObject.game.attackerObjects.splice(
+      this.gameObject.game.attackerObjects.indexOf(this),
+      1,
+    );
+  }
 
   updateMovement() {
     const elapsedSeconds =
@@ -32,10 +45,7 @@ export default abstract class AttackerObject {
     const distance = elapsedSeconds * this.gameObject.velocity;
 
     if (this.gameObject.hp <= 0) {
-      this.gameObject.game.attackerObjects.splice(
-        this.gameObject.game.attackerObjects.indexOf(this),
-        1,
-      );
+      this.destruct();
     }
     const arena = this.gameObject.game.arena;
     if (this.gameObject.nextTrack === null) {

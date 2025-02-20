@@ -1,4 +1,4 @@
-import Game from './engine/game';
+import Game from './engine/Game.ts';
 import { GAME_STATE } from './enum/game_state';
 
 let context: CanvasRenderingContext2D | null = null;

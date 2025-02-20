@@ -1,26 +1,34 @@
 import React, { useEffect } from 'react';
 import CustomButton from 'components/CustomButton';
 import { useNavigate } from 'react-router-dom';
+import HeartIcon from '@mui/icons-material/Favorite';
+import PaidIcon from '@mui/icons-material/Paid';
 import { setContext } from '../game';
 import { game } from '../App.tsx';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { COLOR } from 'game/enum/colors.ts';
+import { RootState } from 'redux/store.ts';
+import { useSelector } from 'react-redux';
+import GameButton from 'components/GameButton';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
+  const { hp, gold, platinum } = useSelector(
+    (state: RootState) => state.gameSlice,
+  );
 
   useEffect(() => {
-    // Get hold of the canvas context
-    const canvas = document.getElementById('gameScreen-canvas');
-    // @ts-ignore
+    const canvas = document.getElementById(
+      'gameScreen-canvas',
+    ) as HTMLCanvasElement;
     if (canvas) setContext(canvas.getContext('2d'));
     return () => {
-      // @ts-ignore
       setContext(null);
     };
   }, []);
 
   useEffect(() => {
-    game.start(0);
+    // game.start(0);
   }, []);
 
   const handleExit = () => {
@@ -29,6 +37,14 @@ const Game: React.FC = () => {
 
   const handleAddTurret = () => {
     game.gameplayController.requestAddTurret();
+  };
+
+  const handleStart = () => {
+    game.gameplayController.startLevel(0);
+  };
+
+  const handleReset = () => {
+    game.gameplayController.resetLevel();
   };
 
   return (
@@ -46,24 +62,67 @@ const Game: React.FC = () => {
           id={'gameScreen-canvas'}
           width="640"
           height="400"
-          style={{ border: '1px solid red' }}
+          style={{ border: '1px solid grey' }}
         />
-        <Box>
-          <CustomButton text={'BACK'} onClick={handleExit} />
+        <Box
+          sx={{
+            p: 1,
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box sx={{ dispaly: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: 'flex', wrap: 'nowrap', gap: 1 }}>
+              <HeartIcon sx={{ color: COLOR.PRIMARY }} />
+              <Typography sx={{ color: 'white' }}>{hp}</Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', wrap: 'nowrap', gap: 1 }}>
+              <PaidIcon sx={{ color: COLOR.YELLOW }} />
+              <Typography sx={{ color: 'white' }}>{gold}</Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', wrap: 'nowrap', gap: 1 }}>
+              <PaidIcon sx={{ color: COLOR.PORTAL_BLUE }} />
+              <Typography sx={{ color: 'white' }}>{platinum}</Typography>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              width: 400,
+              border: '1px solid grey',
+              borderRadius: '4px',
+            }}
+          ></Box>
         </Box>
       </Box>
-      <Box>
-        <CustomButton text={'ADD TURRET'} onClick={handleAddTurret} />
-        <CustomButton
-          text={'SEND ENEMIES'}
-          disabled={true}
-          onClick={() => {}}
-        />
-        <CustomButton
-          text={'RESET EVERYTHING'}
-          disabled={true}
-          onClick={() => {}}
-        />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexDirection: 'column',
+          gap: 1,
+          p: 1,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 1,
+          }}
+        >
+          <GameButton text={'Turret A'} onClick={handleAddTurret} />
+          <GameButton text={'Turret B'} onClick={handleAddTurret} />
+          <GameButton text={'Turret C'} onClick={handleAddTurret} />
+          <GameButton text={'Turret D'} onClick={handleAddTurret} />
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
+          <GameButton text={'SEND ENEMIES'} onClick={handleStart} />
+          <GameButton text={'RESET EVERYTHING'} onClick={handleReset} />
+          <CustomButton text={'EXIT'} onClick={handleExit} />
+        </Box>
       </Box>
       {/*<Hud game={game} reset={resetToggle} />*/}
       {/*{gameState === GAME_STATE.PAUSED ? <Pause game={game} toggleReset={startLevel} /> : null}*/}

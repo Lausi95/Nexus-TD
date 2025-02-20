@@ -1,5 +1,5 @@
 import { getSec } from 'utils/deltaTime.ts';
-import Game from './game';
+import Game from './Game.ts';
 
 type HudProps = {
   game: Game;
@@ -33,10 +33,14 @@ export default class Hud {
         130,
         15,
       );
-      context.fillText(`gameObjects: ${this.game.gameObjects.length}`, 130, 30);
+      context.fillText(
+        `attackers: ${this.game.attackerObjects.length}`,
+        130,
+        30,
+      );
       context.fillText(`deltaTime: ${this.deltaTime}`, 130, 45);
       context.fillText(`fps: ${this.fps}`, 130, 60);
-      context.fillText(`LVL: ${this.game.level}`, 130, 75);
+      context.fillText(`HP: ${this.game.nexus.hp}`, 130, 75);
       context.strokeStyle = 'white';
     }
   }

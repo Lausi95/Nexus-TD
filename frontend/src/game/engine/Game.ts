@@ -1,20 +1,12 @@
-import InputHandler from './input';
+import InputHandler from './Input.ts';
 import { GAME_STATE } from '../enum/game_state';
-import { ENTITY_ID } from '../enum/entitiy_id';
-import GameObject from './gameObject';
-//import Menu from "./menu";
-import Hud from './hud';
-import Spawner from './spawner';
-// import { setGameState } from 'redux/slices/gameSlice';
-import store from '../../redux/store';
-import { Relic } from '../types/Relic.ts';
-import { COLOR } from '../enum/colors.ts';
-import { getMinMax } from 'utils/getMinMax.ts';
-import Arena from 'game/engine/arena.ts';
-import BasicEnemy from 'game/entities/attackers/basic_enemy.ts';
-import BasicDefender from 'game/entities/defenders/basic_defender.ts';
+import GameObject from './DefenderObject.ts';
+import Hud from './Hud.ts';
+import Spawner from './Spawner.ts';
+import Arena from 'game/engine/Arena.ts';
 import AttackerObject from 'game/engine/AttackerObject.ts';
-import GameplayController from 'game/engine/gameplayController.ts';
+import GameplayController from 'game/engine/GameplayController.ts';
+import Nexus from 'game/engine/Nexus.ts';
 
 type GameProps = {
   canvasWidth: number;
@@ -35,6 +27,7 @@ export default class Game {
   spawner: Spawner;
   hud: Hud;
   arena: Arena;
+  nexus: Nexus;
   inputHandler: InputHandler;
   gameplayController: GameplayController;
   birthday: number;
@@ -61,12 +54,13 @@ export default class Game {
 
     // this.particleObjects = [];
 
-    this.gameState = GAME_STATE.CLOSED;
+    this.gameState = GAME_STATE.PLAYING;
 
     this.spawner = new Spawner({ game: this });
     //this.menu = new Menu(this, this.spawner);
     this.hud = new Hud({ game: this });
     this.arena = new Arena({ game: this });
+    this.nexus = new Nexus({ game: this });
     this.gameplayController = new GameplayController({ game: this });
     this.now = Date.now();
 
@@ -108,6 +102,7 @@ export default class Game {
     this.emptyReset();
     this.togglePause(GAME_STATE.PLAYING);
     this.spawner.startLevel(this.level);
+    this.nexus.reset();
   }
 
   emptyReset() {
@@ -158,6 +153,7 @@ export default class Game {
   }
 
   update(deltaTime: number) {
+    this.arena.update(deltaTime);
     if (this.gameState === GAME_STATE.PLAYING) {
       this.now = Date.now();
 
@@ -169,8 +165,9 @@ export default class Game {
 
       this.updateTimeCounter++;
       this.spawner.update(deltaTime);
-      this.arena.update(deltaTime);
       this.hud.update(deltaTime);
+      this.nexus.update(deltaTime);
+      this.gameplayController.update(deltaTime);
       // if(this.projection){
       //   this.projection.update(deltaTime)
       // }
@@ -184,6 +181,8 @@ export default class Game {
     this.gameObjects.forEach((object) => object.draw(context));
     this.attackerObjects.forEach((object) => object.draw(context));
     this.hud.draw(context);
+    this.nexus.draw(context);
+    this.gameplayController.draw(context);
     if (this.projection) {
       this.projection.draw(context);
     }

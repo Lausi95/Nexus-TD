@@ -1,5 +1,4 @@
-import Game from './game';
-import BasicDefender from 'game/entities/defenders/basic_defender.ts';
+import Game from './Game.ts';
 
 type InputHandlerProps = {
   game: Game;
@@ -16,10 +15,9 @@ const keyDownEvents = (event: any, game: Game) => {
   }
 };
 
-// @ts-ignore
-const keyUpEvents = (event: any, game: Game) => {
-  switch (event.code) {
-  }
+const keyUpEvents = (_event: any, _game: Game) => {
+  // switch (event.code) {
+  // }
 };
 
 const handleClick = (event: MouseEvent, canvas: any, game: Game) => {
@@ -66,7 +64,7 @@ export default class InputHandler {
   }
 
   keyDownHandler(event: any) {
-    keyUpEvents(event, this.game);
+    keyDownEvents(event, this.game);
   }
 
   initEvents() {

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import Game from '../../game/engine/game';
+import Game from 'game/engine/Game.ts';
 
 type engineSliceType = {
   game: Game | null;

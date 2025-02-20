@@ -1,8 +1,8 @@
-import { getSec } from 'utils/deltaTime.ts';
-import Game from './game';
+import Game from './Game.ts';
 import TrackTile from 'game/entities/tiles/TrackTile.ts';
 import TileObject from 'game/entities/tiles/Tile.ts';
 import PlaceholderTile from 'game/entities/tiles/PlaceholderTile.ts';
+import { TRACK_0 } from 'game/engine/tracks/track0.ts';
 
 type AreaProps = {
   game: Game;
@@ -26,54 +26,6 @@ const getGrid = (track: [number, number][]) => {
   return grid;
 };
 
-const TRACK_1: [number, number][] = [
-  [0, 1],
-  [1, 1],
-  [2, 1],
-  [2, 2],
-  [2, 3],
-  [2, 4],
-  [2, 5],
-  [2, 6],
-  [2, 7],
-  [2, 8],
-  [3, 8],
-  [4, 8],
-  [5, 8],
-  [5, 7],
-  [5, 6],
-  [5, 5],
-  [5, 4],
-  [5, 3],
-  [5, 2],
-  [6, 2],
-  [7, 2],
-  [8, 2],
-  [9, 2],
-  [10, 2],
-  [11, 2],
-  [12, 2],
-  [13, 2],
-  [14, 2],
-  [14, 3],
-  [14, 4],
-  [14, 5],
-  [13, 5],
-  [12, 5],
-  [11, 5],
-  [10, 5],
-  [9, 5],
-  [9, 6],
-  [9, 7],
-  [9, 8],
-  [10, 8],
-  [11, 8],
-  [12, 8],
-  [13, 8],
-  [14, 8],
-  [15, 8],
-];
-
 export default class Arena {
   game: Game;
   loadedTrack: [number, number][];
@@ -81,7 +33,7 @@ export default class Arena {
 
   constructor({ game }: AreaProps) {
     this.game = game;
-    this.loadedTrack = TRACK_1;
+    this.loadedTrack = TRACK_0;
     this.grid = getGrid(this.loadedTrack);
   }
 

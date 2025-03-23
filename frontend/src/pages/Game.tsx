@@ -10,6 +10,7 @@ import { COLOR } from 'game/enum/colors.ts';
 import { RootState } from 'redux/store.ts';
 import { useSelector } from 'react-redux';
 import GameButton from 'components/GameButton';
+import InspectPanel from 'components/InspectPanel';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const Game: React.FC = () => {
       sx={{
         outline: '1px solid grey',
         width: 900,
-        height: 500,
+        height: 600,
         display: 'grid',
         gridTemplateColumns: '640px 1fr',
       }}
@@ -87,14 +88,7 @@ const Game: React.FC = () => {
               <Typography sx={{ color: 'white' }}>{platinum}</Typography>
             </Box>
           </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              width: 400,
-              border: '1px solid grey',
-              borderRadius: '4px',
-            }}
-          ></Box>
+          <InspectPanel />
         </Box>
       </Box>
       <Box
@@ -103,21 +97,32 @@ const Game: React.FC = () => {
           justifyContent: 'space-between',
           flexDirection: 'column',
           gap: 1,
-          p: 1,
         }}
       >
         <Box
           sx={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'column',
             gap: 1,
+            p: 1,
           }}
         >
-          <GameButton text={'Turret A'} onClick={handleAddTurret} />
-          <GameButton text={'Turret B'} onClick={handleAddTurret} />
-          <GameButton text={'Turret C'} onClick={handleAddTurret} />
-          <GameButton text={'Turret D'} onClick={handleAddTurret} />
+          {/*<PurchasePanel />*/}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 1,
+            }}
+          >
+            <GameButton text={'Turret A'} onClick={handleAddTurret} />
+            <GameButton text={'Turret B'} onClick={handleAddTurret} />
+            <GameButton text={'Turret C'} onClick={handleAddTurret} />
+            <GameButton text={'Turret D'} onClick={handleAddTurret} />
+          </Box>
         </Box>
+
         <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
           <GameButton text={'SEND ENEMIES'} onClick={handleStart} />
           <GameButton text={'RESET EVERYTHING'} onClick={handleReset} />

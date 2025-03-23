@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Game from 'game/engine/Game.ts';
 import { setStatusMsg } from 'redux/slices/authSlice.ts';
+import { DefenderInspectionDetails } from 'game/types/InspectionDetails.ts';
 
 export const earnPlatinum = createAsyncThunk(
   'game/earnPlatinum',
@@ -41,6 +42,7 @@ type gameSliceType = {
   gold: number;
   platinum: number;
   currentTimer: number;
+  inspectedDefender: DefenderInspectionDetails | null;
 };
 
 const initialState: gameSliceType = {
@@ -49,6 +51,7 @@ const initialState: gameSliceType = {
   gold: 0,
   platinum: 0,
   currentTimer: 0,
+  inspectedDefender: null,
 };
 
 const gameSlice = createSlice({
@@ -77,6 +80,9 @@ const gameSlice = createSlice({
     resetTimers: (state) => {
       state.currentTimer = 0;
     },
+    setInspectedDefender: (state, action) => {
+      state.inspectedDefender = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(earnPlatinum.fulfilled, (state, action) => {
@@ -95,6 +101,7 @@ export const {
   reset,
   setCurrentTimer,
   resetTimers,
+  setInspectedDefender,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

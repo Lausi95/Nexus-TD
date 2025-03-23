@@ -1,3 +1,7 @@
+div {
+  color: white;
+}
+
 /* width */
 body *::-webkit-scrollbar {
   width: 8px !important;

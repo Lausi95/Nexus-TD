@@ -3,6 +3,7 @@ import { COLOR } from 'game/enum/colors.ts';
 import Game from 'game/engine/Game.ts';
 import AttackerObject from 'game/engine/AttackerObject.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
+import { DefenderInspectionDetails } from 'game/types/InspectionDetails.ts';
 
 type TProps = {
   game: Game;
@@ -36,6 +37,15 @@ export default class BasicDefender extends DefenderObject {
     this.enemiesTargeted = [];
     this.isProjection = isProjection;
     this.cost = 10;
+  }
+
+  getInspectDetails(): DefenderInspectionDetails {
+    return {
+      name: 'Turret A',
+      damage: this.damage,
+      attackSpeed: this.attackSpeed,
+      radius: 2,
+    };
   }
 
   drawProjection(context: any, color: string) {

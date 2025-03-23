@@ -14,6 +14,7 @@ export default class Nexus extends DefenderObject {
 
   constructor({ game }: TProps) {
     super({
+      placeholderPosition: [0, 0],
       id: ENTITY_ID.STAR,
       game,
       position: {
@@ -36,6 +37,7 @@ export default class Nexus extends DefenderObject {
   update(_deltaTime: number) {
     const track = this.gameObject.game.arena.loadedTrack;
     const placeholderGrid = track[track.length - 1];
+    this.gameObject.placeholderPosition = placeholderGrid;
     this.gameObject.position.x = placeholderGrid[0] * 40 + 10;
     this.gameObject.position.y = placeholderGrid[1] * 40 + 10;
     const trespasser = this.gameObject.game.attackerObjects.find(

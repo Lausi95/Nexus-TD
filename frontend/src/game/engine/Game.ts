@@ -1,6 +1,6 @@
-import InputHandler from './Input.ts';
+import InputHandler from './InputHandler.ts';
 import { GAME_STATE } from '../enum/game_state';
-import GameObject from './DefenderObject.ts';
+import DefenderObject from './DefenderObject.ts';
 import Hud from './Hud.ts';
 import Spawner from './Spawner.ts';
 import Arena from 'game/engine/Arena.ts';
@@ -16,9 +16,9 @@ type GameProps = {
 export default class Game {
   level: number;
   dev: boolean;
-  gameObjects: GameObject[];
+  defenderObjects: DefenderObject[];
   attackerObjects: AttackerObject[];
-  projection: GameObject | null;
+  projection: DefenderObject | null;
   // defenderObjects:
   // particleObjects: Trail[];
   canvas: GameProps;
@@ -48,7 +48,7 @@ export default class Game {
      * gameObjects -> Player can interact with (Player excluded)
      * particleObject -> Player usually cannot interact with
      */
-    this.gameObjects = [];
+    this.defenderObjects = [];
     this.attackerObjects = [];
     this.projection = null;
 
@@ -90,10 +90,8 @@ export default class Game {
   }
 
   close() {
-    this.gameObjects = [];
+    this.defenderObjects = [];
     this.attackerObjects = [];
-    // this.particleObjects = [];
-    // this.gameState = GAME_STATE.CLOSED;
     this.setGameState(GAME_STATE.CLOSED);
   }
 
@@ -107,13 +105,8 @@ export default class Game {
 
   emptyReset() {
     // Resting all the variables
-    this.gameObjects = [
-      // new BasicDefender({ game: this, placeholderPosition: [7, 4] }),
-      //new BasicDefender({ game: this, placeholderPosition: [10, 6] }),
-      //new BasicDefender({ game: this, placeholderPosition: [4, 7] }),
-    ];
+    this.defenderObjects = [];
     this.attackerObjects = [];
-    // this.particleObjects = [];
     this.spawner.reset();
   }
 
@@ -159,7 +152,7 @@ export default class Game {
 
       if (this.updateTimeCounter % this.timeScale === 0) {
         // this.particleObjects.forEach((object) => object.update(deltaTime));
-        this.gameObjects.forEach((object) => object.update(deltaTime));
+        this.defenderObjects.forEach((object) => object.update(deltaTime));
         this.attackerObjects.forEach((object) => object.update(deltaTime));
       }
 
@@ -178,7 +171,7 @@ export default class Game {
     // this.particleObjects.forEach((object) => object.draw(context));
     // this.playerParticleObjects.forEach((object) => object.draw(context));
     this.arena.draw(context);
-    this.gameObjects.forEach((object) => object.draw(context));
+    this.defenderObjects.forEach((object) => object.draw(context));
     this.attackerObjects.forEach((object) => object.draw(context));
     this.hud.draw(context);
     this.nexus.draw(context);

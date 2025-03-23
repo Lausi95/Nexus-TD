@@ -3,6 +3,8 @@ import BasicDefender from 'game/entities/defenders/basic_defender.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
 import { getGridXY, isCoordinateInTile } from 'utils/gridUtils.ts';
 import { COLOR } from 'game/enum/colors.ts';
+import store from 'redux/store.ts';
+import { setInspectedDefender } from 'redux/slices/gameSlice.ts';
 
 type TProps = {
   game: Game;
@@ -25,13 +27,15 @@ export default class GameplayController {
     if (this.shouldAddTurret) {
       this.handleAddTurret(x, y);
     } else {
-      const foundTurret = this.game.gameObjects.find((obj) =>
+      const foundTurret = this.game.defenderObjects.find((obj) =>
         isCoordinateInTile(obj.gameObject.placeholderPosition, x, y),
       );
       if (foundTurret) {
         this.selectedTurret = foundTurret;
+        store.dispatch(setInspectedDefender(foundTurret.getInspectDetails()));
       } else {
         this.selectedTurret = null;
+        store.dispatch(setInspectedDefender(null));
       }
     }
   }
@@ -79,7 +83,7 @@ export default class GameplayController {
         (tile) => tile[0] === gridXY[0] && tile[1] === gridXY[1],
       )
     ) {
-      this.game.gameObjects.push(
+      this.game.defenderObjects.push(
         new BasicDefender({
           game: this.game,
           placeholderPosition: gridXY,

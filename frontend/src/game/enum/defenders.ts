@@ -1,0 +1,4 @@
+export enum DEFENDERS {
+  BASIC = 'BASIC',
+  FLAMETHROWER = 'FLAMETHROWER',
+}

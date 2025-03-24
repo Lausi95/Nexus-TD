@@ -5,6 +5,8 @@ import { getGridXY, isCoordinateInTile } from 'utils/gridUtils.ts';
 import { COLOR } from 'game/enum/colors.ts';
 import store from 'redux/store.ts';
 import { setInspectedDefender } from 'redux/slices/gameSlice.ts';
+import { DEFENDERS } from 'game/enum/defenders.ts';
+import FlamethrowerDefener from 'game/entities/defenders/flamethrower_defender.ts';
 
 type TProps = {
   game: Game;
@@ -65,31 +67,48 @@ export default class GameplayController {
     this.game.reset();
   }
 
-  requestAddTurret() {
+  requestAddTurret(defender: DEFENDERS = DEFENDERS.BASIC) {
     this.shouldAddTurret = true;
     this.selectedTurret = null;
-    this.game.projection = new BasicDefender({
-      game: this.game,
-      placeholderPosition: [-100, -100],
-      isProjection: true,
-    });
+    if (defender === DEFENDERS.BASIC) {
+      this.game.projection = new BasicDefender({
+        game: this.game,
+        placeholderPosition: [-100, -100],
+        isProjection: true,
+      });
+    } else if (defender === DEFENDERS.FLAMETHROWER) {
+      this.game.projection = new FlamethrowerDefener({
+        game: this.game,
+        placeholderPosition: [-100, -100],
+        isProjection: true,
+      });
+    }
   }
 
   handleAddTurret(x: number, y: number) {
-    this.cancelAddTurretRequest();
     const gridXY = getGridXY(x, y);
     if (
       !this.game.arena.loadedTrack.find(
         (tile) => tile[0] === gridXY[0] && tile[1] === gridXY[1],
       )
     ) {
-      this.game.defenderObjects.push(
-        new BasicDefender({
-          game: this.game,
-          placeholderPosition: gridXY,
-        }),
-      );
+      if (this.game.projection instanceof BasicDefender) {
+        this.game.defenderObjects.push(
+          new BasicDefender({
+            game: this.game,
+            placeholderPosition: gridXY,
+          }),
+        );
+      } else if (this.game.projection instanceof FlamethrowerDefener) {
+        this.game.defenderObjects.push(
+          new FlamethrowerDefener({
+            game: this.game,
+            placeholderPosition: gridXY,
+          }),
+        );
+      }
     }
+    this.cancelAddTurretRequest();
   }
 
   cancelAddTurretRequest() {

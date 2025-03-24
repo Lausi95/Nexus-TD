@@ -11,6 +11,7 @@ import { RootState } from 'redux/store.ts';
 import { useSelector } from 'react-redux';
 import GameButton from 'components/GameButton';
 import InspectPanel from 'components/InspectPanel';
+import { DEFENDERS } from 'game/enum/defenders.ts';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
@@ -36,8 +37,8 @@ const Game: React.FC = () => {
     navigate('/home');
   };
 
-  const handleAddTurret = () => {
-    game.gameplayController.requestAddTurret();
+  const handleAddTurret = (defender?: DEFENDERS) => {
+    game.gameplayController.requestAddTurret(defender);
   };
 
   const handleStart = () => {
@@ -116,8 +117,14 @@ const Game: React.FC = () => {
               gap: 1,
             }}
           >
-            <GameButton text={'Turret A'} onClick={handleAddTurret} />
-            <GameButton text={'Turret B'} onClick={handleAddTurret} />
+            <GameButton
+              text={'Turret A'}
+              onClick={() => handleAddTurret(DEFENDERS.BASIC)}
+            />
+            <GameButton
+              text={'Turret B'}
+              onClick={() => handleAddTurret(DEFENDERS.FLAMETHROWER)}
+            />
             <GameButton text={'Turret C'} onClick={handleAddTurret} />
             <GameButton text={'Turret D'} onClick={handleAddTurret} />
           </Box>

@@ -27,7 +27,7 @@ export default class BasicEnemy extends AttackerObject {
       id: ENTITY_ID.BASIC_ENEMY,
       position: position || getPosition(game.arena.loadedTrack[0]),
       velocity: getVelocityTilesPerSecond(2),
-      hp: 100,
+      hp: 1000,
       nextTrack: null,
       numberTrack: 0,
       damage: 10,

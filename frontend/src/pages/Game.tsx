@@ -23,7 +23,11 @@ const Game: React.FC = () => {
     const canvas = document.getElementById(
       'gameScreen-canvas',
     ) as HTMLCanvasElement;
-    if (canvas) setContext(canvas.getContext('2d'));
+    if (canvas) {
+      setContext(canvas.getContext('2d'));
+      game.gameplayController.startLevel(0);
+      game.inputHandler.initEvents();
+    }
     return () => {
       setContext(null);
     };
@@ -41,10 +45,9 @@ const Game: React.FC = () => {
     game.gameplayController.requestAddTurret(defender);
   };
 
-  const handleStart = () => {
-    game.gameplayController.startLevel(0);
+  const handleSendWave = () => {
+    game.gameplayController.sendWave();
   };
-
   const handleReset = () => {
     game.gameplayController.resetLevel();
   };
@@ -130,8 +133,8 @@ const Game: React.FC = () => {
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
-          <GameButton text={'SEND ENEMIES'} onClick={handleStart} />
+        <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', p: 1 }}>
+          <GameButton text={'SEND WAVE'} onClick={handleSendWave} />
           <GameButton text={'RESET EVERYTHING'} onClick={handleReset} />
           <CustomButton text={'EXIT'} onClick={handleExit} />
         </Box>

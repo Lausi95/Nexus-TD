@@ -1,8 +1,8 @@
-import Game from '../Game.ts';
+import Game from '../../Game.ts';
 import { sec } from 'utils/deltaTime.ts';
 import BasicEnemy from 'game/entities/attackers/basic_enemy.ts';
 
-export const getLevel0 = (game: Game): null => {
+export const wave0 = (game: Game): null => {
   if (game.spawner.executionSequence === 0) {
     if (game.spawner.roundTimer === sec(0.1)) {
       game.attackerObjects.push(new BasicEnemy({ game }));

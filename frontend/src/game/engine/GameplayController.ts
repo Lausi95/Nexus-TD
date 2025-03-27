@@ -2,7 +2,6 @@ import Game from './Game.ts';
 import BasicDefender from 'game/entities/defenders/basic_defender.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
 import { getGridXY, isCoordinateInTile } from 'utils/gridUtils.ts';
-import { COLOR } from 'game/enum/colors.ts';
 import store from 'redux/store.ts';
 import { setInspectedDefender } from 'redux/slices/gameSlice.ts';
 import { DEFENDERS } from 'game/enum/defenders.ts';
@@ -25,13 +24,24 @@ export default class GameplayController {
     // this.handleMove = this.handleMove.bind(this);
   }
 
+  reset() {
+    this.shouldAddTurret = false;
+    this.selectedTurret = null;
+  }
+
   handleClick(x: number, y: number) {
     if (this.shouldAddTurret) {
       this.handleAddTurret(x, y);
     } else {
-      const foundTurret = this.game.defenderObjects.find((obj) =>
+      let foundTurret = this.game.defenderObjects.find((obj) =>
         isCoordinateInTile(obj.gameObject.placeholderPosition, x, y),
       );
+      if (
+        !foundTurret &&
+        isCoordinateInTile(this.game.nexus.gameObject.placeholderPosition, x, y)
+      ) {
+        foundTurret = this.game.nexus;
+      }
       if (foundTurret) {
         this.selectedTurret = foundTurret;
         store.dispatch(setInspectedDefender(foundTurret.getInspectDetails()));
@@ -54,7 +64,6 @@ export default class GameplayController {
         x: gridX * 40,
         y: gridY * 40,
       };
-      // @ts-ignore
       this.game.projection.gameObject.placeholderPosition = [gridX, gridY];
     }
   }
@@ -63,8 +72,12 @@ export default class GameplayController {
     this.game.start(level);
   }
 
+  sendWave() {
+    this.game.spawner.nextWave();
+  }
+
   resetLevel() {
-    this.game.reset();
+    this.game.emptyReset();
   }
 
   requestAddTurret(defender: DEFENDERS = DEFENDERS.BASIC) {
@@ -90,6 +103,11 @@ export default class GameplayController {
     if (
       !this.game.arena.loadedTrack.find(
         (tile) => tile[0] === gridXY[0] && tile[1] === gridXY[1],
+      ) &&
+      !this.game.defenderObjects.find(
+        (defender) =>
+          defender.gameObject.placeholderPosition[0] === gridXY[0] &&
+          defender.gameObject.placeholderPosition[1] === gridXY[1],
       )
     ) {
       if (this.game.projection instanceof BasicDefender) {
@@ -120,9 +138,7 @@ export default class GameplayController {
 
   draw(context: any) {
     if (this.selectedTurret) {
-      console.log('hello?');
-      // @ts-ignore
-      this.selectedTurret.drawProjection(context, COLOR.PRIMARY);
+      this.selectedTurret.drawProjection(context, true);
     }
   }
 }

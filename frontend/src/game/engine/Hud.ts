@@ -39,8 +39,14 @@ export default class Hud {
         30,
       );
       context.fillText(`deltaTime: ${this.deltaTime}`, 130, 45);
-      context.fillText(`fps: ${this.fps}`, 130, 60);
+      context.fillText(`State: ${this.game.gameState}`, 130, 60);
       context.fillText(`HP: ${this.game.nexus.hp}`, 130, 75);
+      context.fillText(`fps: ${this.fps}`, 130, 90);
+
+      if (this.game.level === null) {
+        context.fillText(`SELECT A LEVEL TO START`, 240, 30);
+      }
+
       context.strokeStyle = 'white';
     }
   }

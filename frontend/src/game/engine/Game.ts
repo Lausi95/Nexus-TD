@@ -14,7 +14,7 @@ type GameProps = {
 };
 
 export default class Game {
-  level: number;
+  level: number | null;
   dev: boolean;
   defenderObjects: DefenderObject[];
   attackerObjects: AttackerObject[];
@@ -41,7 +41,7 @@ export default class Game {
     this.birthday = Date.now();
     // experimental level;
 
-    this.level = 1;
+    this.level = null;
     // Dev option for debugging
     this.dev = true; // process.env.NODE_ENV === 'development';
     /**
@@ -76,12 +76,9 @@ export default class Game {
   //This function runs once per reload of the page
   start(level: number) {
     // Cleaning up any leftovers
-    this.emptyReset();
+    this.reset();
     console.log('⛳️ LEVEL STARTED', level);
-    this.togglePause(GAME_STATE.PLAYING);
     this.level = level;
-    this.spawner.startLevel(this.level);
-    this.inputHandler.initEvents();
   }
 
   setGameState(gameState: GAME_STATE) {
@@ -99,7 +96,7 @@ export default class Game {
     //This is the reset/replay button
     this.emptyReset();
     this.togglePause(GAME_STATE.PLAYING);
-    this.spawner.startLevel(this.level);
+    this.spawner.reset();
     this.nexus.reset();
   }
 
@@ -107,6 +104,7 @@ export default class Game {
     // Resting all the variables
     this.defenderObjects = [];
     this.attackerObjects = [];
+    this.gameplayController.reset();
     this.spawner.reset();
   }
 
@@ -147,7 +145,7 @@ export default class Game {
 
   update(deltaTime: number) {
     this.arena.update(deltaTime);
-    if (this.gameState === GAME_STATE.PLAYING) {
+    if (this.gameState === GAME_STATE.PLAYING && this.level !== null) {
       this.now = Date.now();
 
       if (this.updateTimeCounter % this.timeScale === 0) {

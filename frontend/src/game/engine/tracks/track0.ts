@@ -44,4 +44,5 @@ export const TRACK_0: [number, number][] = [
   [13, 8],
   [14, 8],
   [15, 8],
+  [15, 9],
 ];

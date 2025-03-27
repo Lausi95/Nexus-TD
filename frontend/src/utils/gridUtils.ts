@@ -20,8 +20,6 @@ export const isCoordinateInTile = (
   const tileYStart = row * TILE_SIZE;
   const tileYEnd = tileYStart + TILE_SIZE;
 
-  console.log(tile, tileXStart, tileYStart, x, y);
-
   // Check if (x, y) is within this tile's boundaries
   return x >= tileXStart && x < tileXEnd && y >= tileYStart && y < tileYEnd;
 };

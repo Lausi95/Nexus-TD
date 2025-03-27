@@ -133,7 +133,7 @@ const InspectPanel: React.FC<TProps> = () => {
             justifyContent: 'end',
           }}
         >
-          <Box>hey</Box>
+          {/*<Box>hey</Box>*/}
         </Box>
         {/*<Box*/}
         {/*  sx={{*/}

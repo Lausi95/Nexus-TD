@@ -121,15 +121,29 @@ const Game: React.FC = () => {
             }}
           >
             <GameButton
-              text={'Turret A'}
-              onClick={() => handleAddTurret(DEFENDERS.BASIC)}
+              text={'Fire Defender'}
+              onClick={() => handleAddTurret(DEFENDERS.FIRE)}
             />
             <GameButton
-              text={'Turret B'}
-              onClick={() => handleAddTurret(DEFENDERS.FLAMETHROWER)}
+              text={'Nature Defender'}
+              onClick={() => handleAddTurret(DEFENDERS.NATURE)}
             />
-            <GameButton text={'Turret C'} onClick={handleAddTurret} />
-            <GameButton text={'Turret D'} onClick={handleAddTurret} />
+            <GameButton
+              text={'Stone Defender'}
+              onClick={() => handleAddTurret(DEFENDERS.STONE)}
+            />
+            <GameButton
+              text={'Electric Defender'}
+              onClick={() => handleAddTurret(DEFENDERS.ELECTRIC)}
+            />
+            <GameButton
+              text={'Ice Defender'}
+              onClick={() => handleAddTurret(DEFENDERS.ICE)}
+            />
+            <GameButton
+              text={'Plasma Defender'}
+              onClick={() => handleAddTurret(DEFENDERS.PLASMA)}
+            />
           </Box>
         </Box>
 

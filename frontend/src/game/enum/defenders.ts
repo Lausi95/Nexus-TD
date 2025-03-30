@@ -1,4 +1,9 @@
 export enum DEFENDERS {
   BASIC = 'BASIC',
-  FLAMETHROWER = 'FLAMETHROWER',
+  FIRE = 'FIRE',
+  NATURE = 'NATURE',
+  STONE = 'STONE',
+  ELECTRIC = 'ELECTRIC',
+  ICE = 'ICE',
+  PLASMA = 'PLASMA',
 }

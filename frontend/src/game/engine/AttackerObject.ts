@@ -3,13 +3,18 @@ import Game from 'game/engine/Game.ts';
 import TrackTile from 'game/entities/tiles/TrackTile.ts';
 import store from 'redux/store.ts';
 import { earnGold, earnPlatinum } from 'redux/slices/gameSlice.ts';
+import { getPosition, getVelocityTilesPerSecond } from 'utils/position.ts';
+import { XY } from 'game/types/XY.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
 
 type TProps = {
   game: Game;
   id: ENTITY_ID;
-  position: { x: number; y: number };
+  elementType: ELEMENT_TYPE;
+  position: XY;
   velocity: number;
   hp: number;
+  maxHp: number;
   damage: number;
   numberTrack: number;
   gold: number;
@@ -17,12 +22,46 @@ type TProps = {
   nextTrack: TrackTile | null;
 };
 
+type OptionalKeys =
+  | 'position'
+  | 'velocity'
+  | 'hp'
+  | 'maxHp'
+  | 'damage'
+  | 'numberTrack'
+  | 'nextTrack'
+  | 'gold'
+  | 'platinum';
+
+type ConstructorProps = Omit<TProps, OptionalKeys> & {
+  position?: XY;
+  velocity?: number;
+  hp?: number;
+  maxHp?: number;
+  damage?: number;
+  numberTrack?: number;
+  gold?: number;
+  platinum?: number;
+  nextTrack?: TrackTile | null;
+};
+
 export default abstract class AttackerObject {
   gameObject: TProps;
   lastTimeCheck: number;
 
-  protected constructor(props: TProps) {
-    this.gameObject = props;
+  protected constructor(props: ConstructorProps) {
+    this.gameObject = {
+      ...props,
+      hp: props.hp ?? 100,
+      position: props.position || getPosition(props.game.arena.loadedTrack[0]),
+      velocity: props.velocity ?? getVelocityTilesPerSecond(1.5),
+      maxHp: props.maxHp ?? 100,
+      damage: props.damage ?? 10,
+      gold: props.gold ?? 10,
+      platinum: props.platinum ?? 1,
+      numberTrack: props.numberTrack ?? 0,
+      nextTrack: props.nextTrack ?? null,
+    };
     this.lastTimeCheck = props.game.now;
   }
 

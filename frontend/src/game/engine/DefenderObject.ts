@@ -6,10 +6,13 @@ import { drawAttackArea, isEnemyInAttackRange } from 'utils/targetDetection.ts';
 import { radiusSquare1x } from 'game/enum/effectiveRadius.ts';
 import { EffectiveRadius } from 'game/types/EffectiveRadius.ts';
 import { COLOR } from 'game/enum/colors.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
+import { getElementalDamage } from 'utils/getElementalDamage.ts';
 
 type TProps = {
-  id: ENTITY_ID;
   game: Game;
+  id: ENTITY_ID;
+  elementType: ELEMENT_TYPE;
   name: string;
   position: { x: number; y: number };
   placeholderPosition: [number, number];
@@ -44,8 +47,6 @@ export default abstract class DefenderObject {
   gameObject: TProps;
   enemiesTargeted: AttackerObject[];
   lastAttackTimestamp: number;
-  offsetX: number;
-  offsetY: number;
   protected constructor(props: ConstructorProps) {
     this.gameObject = {
       ...props,
@@ -62,8 +63,6 @@ export default abstract class DefenderObject {
     };
     this.enemiesTargeted = [];
     this.lastAttackTimestamp = 0;
-    this.offsetX = 0;
-    this.offsetY = 0;
   }
 
   abstract update(deltaTime: number): void;
@@ -113,15 +112,15 @@ export default abstract class DefenderObject {
   ) {
     context.lineWidth = 1; // Set line width
     context.strokeStyle = color;
-    this.enemiesTargeted.forEach((enemy, index) => {
+    this.enemiesTargeted.forEach((enemy) => {
       context.beginPath();
       context.moveTo(
         this.gameObject.position.x + 20,
         this.gameObject.position.y + 20,
       );
       context.lineTo(
-        enemy.gameObject.position.x + 5 + (index % 2 === 0 ? 4 : -4),
-        enemy.gameObject.position.y + 5 + (index % 2 === 0 ? 4 : -4),
+        enemy.gameObject.position.x + 6,
+        enemy.gameObject.position.y + 6,
       );
       context.stroke();
     });
@@ -137,6 +136,7 @@ export default abstract class DefenderObject {
   }
 
   targetAndDamageEnemies() {
+    // Calculate targeted enemies
     const newArray: AttackerObject[] = [];
     this.gameObject.game.attackerObjects.forEach((gameObj) => {
       if (
@@ -155,17 +155,17 @@ export default abstract class DefenderObject {
       }
     });
     this.enemiesTargeted = newArray;
+
+    // Deal damage to the targeted enemies
     if (
       this.gameObject.game.now >=
       this.lastAttackTimestamp + 1000 / this.gameObject.attackSpeed
     ) {
-      this.offsetX = Math.floor(Math.random() * 11) - 5;
-      this.offsetY = Math.floor(Math.random() * 11) - 5;
       this.lastAttackTimestamp = this.gameObject.game.now;
       this.enemiesTargeted.forEach((enemy) => {
         enemy.gameObject.hp = Math.max(
           0,
-          enemy.gameObject.hp - this.gameObject.damage,
+          enemy.gameObject.hp - getElementalDamage(this, enemy),
         );
       });
     }

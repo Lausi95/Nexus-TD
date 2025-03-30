@@ -10,11 +10,11 @@ type TProps = {
   position?: { x: number; y: number };
 };
 
-export default class BasicEnemy extends AttackerObject {
+export default class FireAttacker extends AttackerObject {
   constructor({ game, position }: TProps) {
     super({
       id: ENTITY_ID.BASIC_ENEMY,
-      elementType: ELEMENT_TYPE.UNKOWN,
+      elementType: ELEMENT_TYPE.FIRE,
       position,
       game,
     });
@@ -24,7 +24,7 @@ export default class BasicEnemy extends AttackerObject {
     drawDiamond(
       context,
       [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.WHITE,
+      COLOR.ORANGE,
     );
     drawHpBar(context, this);
   }

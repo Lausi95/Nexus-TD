@@ -1,4 +1,4 @@
-const TILE_SIZE = 40; // Each tile is 40px
+import { TILE_SIZE } from 'game/constants';
 
 export const getGridXY = (x: number, y: number): [number, number] => {
   const gridX = Math.floor(x / TILE_SIZE);

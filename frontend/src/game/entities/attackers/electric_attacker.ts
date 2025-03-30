@@ -4,17 +4,19 @@ import Game from 'game/engine/Game.ts';
 import AttackerObject from 'game/engine/AttackerObject.ts';
 import { drawDiamond, drawHpBar } from 'utils/draw/draw.ts';
 import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
+import { getVelocityTilesPerSecond } from 'utils/position.ts';
 
 type TProps = {
   game: Game;
   position?: { x: number; y: number };
 };
 
-export default class BasicEnemy extends AttackerObject {
+export default class ElectricAttack extends AttackerObject {
   constructor({ game, position }: TProps) {
     super({
       id: ENTITY_ID.BASIC_ENEMY,
-      elementType: ELEMENT_TYPE.UNKOWN,
+      elementType: ELEMENT_TYPE.ELECTRIC,
+      velocity: getVelocityTilesPerSecond(3),
       position,
       game,
     });
@@ -24,7 +26,7 @@ export default class BasicEnemy extends AttackerObject {
     drawDiamond(
       context,
       [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.WHITE,
+      COLOR.YELLOW,
     );
     drawHpBar(context, this);
   }

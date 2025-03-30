@@ -2,6 +2,7 @@ import { ENTITY_ID } from 'game/enum/entitiy_id.ts';
 import { COLOR } from 'game/enum/colors.ts';
 import Game from 'game/engine/Game.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
 
 type TProps = {
   game: Game;
@@ -14,13 +15,20 @@ export default class BasicDefender extends DefenderObject {
     super({
       name: 'Turret A',
       id: ENTITY_ID.STAR,
+      elementType: ELEMENT_TYPE.UNKOWN,
       game,
+      damage: 4,
       placeholderPosition,
       isProjection,
     });
   }
 
   draw(context: any) {
+    this.drawTargetTracing(context);
+    if (this.gameObject.isProjection) {
+      this.drawProjection(context);
+    }
+
     context.fillStyle = COLOR.PRIMARY;
     context.fillRect(
       this.gameObject.position.x + 10,
@@ -28,11 +36,6 @@ export default class BasicDefender extends DefenderObject {
       20,
       20,
     );
-    this.drawTargetTracing(context);
-
-    if (this.gameObject.isProjection) {
-      this.drawProjection(context);
-    }
   }
 
   update(_deltaTime: number) {

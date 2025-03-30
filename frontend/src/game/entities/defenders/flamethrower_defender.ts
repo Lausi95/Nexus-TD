@@ -3,6 +3,7 @@ import { COLOR } from 'game/enum/colors.ts';
 import Game from 'game/engine/Game.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
 import { radiusCross2x } from 'game/enum/effectiveRadius.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
 
 type TProps = {
   game: Game;
@@ -14,7 +15,8 @@ export default class FlamethrowerDefener extends DefenderObject {
   constructor({ game, placeholderPosition, isProjection = false }: TProps) {
     super({
       id: ENTITY_ID.BASIC_ENEMY,
-      name: 'Flamethrower',
+      elementType: ELEMENT_TYPE.FIRE,
+      name: 'Fire Turret',
       game,
       placeholderPosition,
       isProjection,
@@ -23,6 +25,7 @@ export default class FlamethrowerDefener extends DefenderObject {
   }
 
   draw(context: any) {
+    this.drawTargetTracing(context);
     if (this.gameObject.isProjection) {
       this.drawProjection(context);
     }
@@ -34,7 +37,6 @@ export default class FlamethrowerDefener extends DefenderObject {
       20,
       20,
     );
-    this.drawTargetTracing(context);
   }
 
   update(_deltaTime: number) {

@@ -14,9 +14,17 @@ const getGrid = (track: [number, number][]) => {
   for (let x = 0; x < 16; x++) {
     let row = [];
     for (let y = 0; y < 10; y++) {
-      const isTrackTile = track.some(([tx, ty]) => tx === x && ty === y);
-      if (isTrackTile) {
-        row.push(new TrackTile({ gridPosition: { x, y } }));
+      const isTrackTileIndex = track.findIndex(
+        ([tx, ty]) => tx === x && ty === y,
+      );
+      if (isTrackTileIndex !== -1) {
+        row.push(
+          new TrackTile({
+            gridPosition: { x, y },
+            track,
+            index: isTrackTileIndex,
+          }),
+        );
       } else {
         row.push(new PlaceholderTile({ gridPosition: { x, y } }));
       }

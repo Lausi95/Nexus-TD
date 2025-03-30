@@ -1,8 +1,7 @@
 import { COLOR } from 'game/enum/colors.ts';
+import { TILE_SIZE } from 'game/constants';
 
 type TCanvasPos = [number, number];
-
-const TILE_SIZE = 40;
 
 export const isEnemyInAttackRange = (
   offsets: number[][],

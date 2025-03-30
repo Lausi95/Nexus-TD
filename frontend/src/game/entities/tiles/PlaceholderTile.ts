@@ -16,7 +16,7 @@ export default class PlaceholderTile extends TileObject {
   update(_deltaTime: number): void {}
   draw(context: any): void {
     context.strokeStyle = 'white';
-    context.globalAlpha = 0.2;
+    context.globalAlpha = 0.06;
     context.beginPath();
     context.rect(this.gridPosition.x * 40, this.gridPosition.y * 40, 40, 40);
     context.stroke();

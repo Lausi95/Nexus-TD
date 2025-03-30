@@ -1,0 +1,9 @@
+export enum ELEMENT_TYPE {
+  UNKOWN = 'UNKOWN',
+  ICE = 'ICE',
+  FIRE = 'FIRE',
+  NATURE = 'NATURE',
+  STONE = 'STONE',
+  ELECTRIC = 'ELECTRIC',
+  PLASMA = 'FIRE',
+}

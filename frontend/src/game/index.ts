@@ -29,18 +29,19 @@ const startEngine = () => {
   const fpsInterval = 1000 / fps;
 
   function gameLoop(timestamp: number) {
-    if (game.gameState === GAME_STATE.PLAYING && context !== null) {
-      const deltaTime = timestamp - lastTime;
+    if (!lastTime) lastTime = timestamp;
 
+    const deltaTime = timestamp - lastTime;
+
+    if (game.gameState === GAME_STATE.PLAYING && context !== null) {
       if (deltaTime >= fpsInterval) {
-        // Clear Screen
-        context.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         // Update Logic and Redraw
         game.update(deltaTime);
+        context.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         game.draw(context);
 
-        // Update lastTime to now, subtracting any extra time elapsed beyond the frame time
-        lastTime = timestamp - (deltaTime % fpsInterval);
+        // Set lastTime to current frame (not corrected by leftover)
+        lastTime = timestamp;
       }
     }
 

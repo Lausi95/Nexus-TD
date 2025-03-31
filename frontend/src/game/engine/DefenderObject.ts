@@ -156,6 +156,10 @@ export default abstract class DefenderObject {
     });
     this.enemiesTargeted = newArray;
 
+    this.damageEnemies(callbackEffect);
+  }
+
+  damageEnemies(callbackEffect?: () => void) {
     // Deal damage to the targeted enemies
     if (
       this.gameObject.game.now >=

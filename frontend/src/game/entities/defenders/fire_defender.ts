@@ -11,7 +11,7 @@ type TProps = {
   isProjection?: boolean;
 };
 
-export default class FlamethrowerDefener extends DefenderObject {
+export default class FireDefender extends DefenderObject {
   constructor({ game, placeholderPosition, isProjection = false }: TProps) {
     super({
       id: ENTITY_ID.BASIC_ENEMY,

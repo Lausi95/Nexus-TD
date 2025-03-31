@@ -13,7 +13,7 @@ type TProps = {
 export default class BasicDefender extends DefenderObject {
   constructor({ game, placeholderPosition, isProjection = false }: TProps) {
     super({
-      name: 'Turret A',
+      name: 'Basic Defender',
       id: ENTITY_ID.STAR,
       elementType: ELEMENT_TYPE.UNKOWN,
       game,

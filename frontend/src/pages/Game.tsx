@@ -120,19 +120,34 @@ const Game: React.FC = () => {
               gap: 1,
             }}
           >
+              <GameButton
+                  text={'Unkown'}
+                  onClick={() => handleAddTurret(ELEMENT_TYPE.UNKOWN)}
+              />
             <GameButton
-              text={'Unkown'}
-              onClick={() => handleAddTurret(ELEMENT_TYPE.UNKOWN)}
-            />
-            <GameButton
-              text={'Fire'}
+              text={'Fire Defender'}
               onClick={() => handleAddTurret(ELEMENT_TYPE.FIRE)}
             />
             <GameButton
-              text={'Ice'}
+              text={'Nature Defender'}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.NATURE)}
+            />
+            <GameButton
+              text={'Stone Defender'}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.STONE)}
+            />
+            <GameButton
+              text={'Electric Defender'}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.ELECTRIC)}
+            />
+            <GameButton
+              text={'Ice Defender'}
               onClick={() => handleAddTurret(ELEMENT_TYPE.ICE)}
             />
-            <GameButton text={'Turret D'} onClick={handleAddTurret} />
+            <GameButton
+              text={'Plasma Defender'}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.PLASMA)}
+            />
           </Box>
         </Box>
 

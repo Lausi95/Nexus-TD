@@ -1,0 +1,43 @@
+import { ENTITY_ID } from "game/enum/entitiy_id.ts";
+import { COLOR } from "game/enum/colors.ts";
+import Game from "game/engine/Game.ts";
+import DefenderObject from "game/engine/DefenderObject.ts";
+import { ELEMENT_TYPE } from "game/enum/elementType.ts";
+
+type TProps = {
+	game: Game;
+	placeholderPosition: [number, number];
+	isProjection?: boolean;
+};
+
+export default class PlasmaDefender extends DefenderObject {
+	constructor({ game, placeholderPosition, isProjection = false }: TProps) {
+		super({
+			id: ENTITY_ID.BASIC_ENEMY,
+			elementType: ELEMENT_TYPE.PLASMA,
+			name: "Plasma Turret",
+			game,
+			placeholderPosition,
+			isProjection,
+		});
+	}
+
+	draw(context: any) {
+		this.drawTargetTracing(context);
+		if (this.gameObject.isProjection) {
+			this.drawProjection(context);
+		}
+
+		context.fillStyle = COLOR.PURPLE;
+		context.fillRect(
+			this.gameObject.position.x + 10,
+			this.gameObject.position.y + 10,
+			20,
+			20,
+		);
+	}
+
+	update(_deltaTime: number) {
+		this.targetAndDamageEnemies();
+	}
+}

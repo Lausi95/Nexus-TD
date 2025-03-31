@@ -5,9 +5,13 @@ import { getGridXY, isCoordinateInTile } from 'utils/gridUtils.ts';
 import store from 'redux/store.ts';
 import { setInspectedDefender } from 'redux/slices/gameSlice.ts';
 import { DEFENDERS } from 'game/enum/defenders.ts';
-import FlamethrowerDefener from 'game/entities/defenders/flamethrower_defender.ts';
-import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
+import FireDefender from 'game/entities/defenders/fire_defender.ts';
+import NatureDefender from 'game/entities/defenders/nature_defender.ts';
+import ElectricDefender from 'game/entities/defenders/electric_defender.ts';
 import IceDefender from 'game/entities/defenders/ice_defender.ts';
+import PlasmaDefender from 'game/entities/defenders/plasma_defender.ts';
+import StoneDefender from 'game/entities/defenders/stone_defender.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
 
 type TProps = {
   game: Game;
@@ -92,13 +96,37 @@ export default class GameplayController {
         isProjection: true,
       });
     } else if (element === ELEMENT_TYPE.FIRE) {
-      this.game.projection = new FlamethrowerDefener({
+      this.game.projection = new FireDefender({
+        game: this.game,
+        placeholderPosition: [-100, -100],
+        isProjection: true,
+      });
+    } else if (element === ELEMENT_TYPE.NATURE) {
+      this.game.projection = new NatureDefender({
+        game: this.game,
+        placeholderPosition: [-100, -100],
+        isProjection: true,
+      });
+    } else if (element === ELEMENT_TYPE.ELECTRIC) {
+      this.game.projection = new ElectricDefender({
         game: this.game,
         placeholderPosition: [-100, -100],
         isProjection: true,
       });
     } else if (element === ELEMENT_TYPE.ICE) {
       this.game.projection = new IceDefender({
+        game: this.game,
+        placeholderPosition: [-100, -100],
+        isProjection: true,
+      });
+    } else if (element === ELEMENT_TYPE.PLASMA) {
+      this.game.projection = new PlasmaDefender({
+        game: this.game,
+        placeholderPosition: [-100, -100],
+        isProjection: true,
+      });
+    } else if (element === ELEMENT_TYPE.STONE) {
+      this.game.projection = new StoneDefender({
         game: this.game,
         placeholderPosition: [-100, -100],
         isProjection: true,
@@ -125,9 +153,23 @@ export default class GameplayController {
             placeholderPosition: gridXY,
           }),
         );
-      } else if (this.game.projection instanceof FlamethrowerDefener) {
+      } else if (this.game.projection instanceof FireDefender) {
         this.game.defenderObjects.push(
-          new FlamethrowerDefener({
+          new FireDefender({
+            game: this.game,
+            placeholderPosition: gridXY,
+          }),
+        );
+      } else if (this.game.projection instanceof StoneDefender) {
+        this.game.defenderObjects.push(
+          new StoneDefender({
+            game: this.game,
+            placeholderPosition: gridXY,
+          }),
+        );
+      } else if (this.game.projection instanceof ElectricDefender) {
+        this.game.defenderObjects.push(
+          new ElectricDefender({
             game: this.game,
             placeholderPosition: gridXY,
           }),
@@ -135,6 +177,20 @@ export default class GameplayController {
       } else if (this.game.projection instanceof IceDefender) {
         this.game.defenderObjects.push(
           new IceDefender({
+            game: this.game,
+            placeholderPosition: gridXY,
+          }),
+        );
+      } else if (this.game.projection instanceof PlasmaDefender) {
+        this.game.defenderObjects.push(
+          new PlasmaDefender({
+            game: this.game,
+            placeholderPosition: gridXY,
+          }),
+        );
+      } else if (this.game.projection instanceof NatureDefender) {
+        this.game.defenderObjects.push(
+          new NatureDefender({
             game: this.game,
             placeholderPosition: gridXY,
           }),

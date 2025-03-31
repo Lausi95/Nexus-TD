@@ -3,7 +3,7 @@ import { COLOR } from 'game/enum/colors.ts';
 import Game from 'game/engine/Game.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
 import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
-import { radiusSquare1x } from 'game/enum/effectiveRadius.ts';
+import { radiusSquare1x } from 'game/constants/effectiveRadius.ts';
 
 type TProps = {
   game: Game;
@@ -62,10 +62,12 @@ export default class IceDefender extends DefenderObject {
   }
 
   update(_deltaTime: number) {
-    this.targetAndDamageEnemies(() => {
-      this.enemiesTargeted.forEach(
-        (enemy) => (enemy.lastTimeFreezed = this.gameObject.game.now),
-      );
+    this.targetAndDamageEnemies({
+      callbackEffect: () => {
+        this.enemiesTargeted.forEach(
+          (enemy) => (enemy.lastTimeFreezed = this.gameObject.game.now),
+        );
+      },
     });
     if (this.enemiesTargeted.length > 0) {
       this.pulseTimer += this.getPulseIncrement(this.pulseTimer);

@@ -2,7 +2,7 @@ import { ENTITY_ID } from 'game/enum/entitiy_id.ts';
 import { COLOR } from 'game/enum/colors.ts';
 import Game from 'game/engine/Game.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
-import { radiusCross2x } from 'game/enum/effectiveRadius.ts';
+import { radiusCross2x } from 'game/constants/effectiveRadius.ts';
 import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
 
 type TProps = {

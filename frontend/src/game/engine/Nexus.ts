@@ -4,7 +4,8 @@ import DefenderObject from 'game/engine/DefenderObject.ts';
 import { ENTITY_ID } from 'game/enum/entitiy_id.ts';
 import { setHP } from 'redux/slices/gameSlice.ts';
 import store from 'redux/store.ts';
-import { radiusSquare1x } from 'game/enum/effectiveRadius.ts';
+import { radiusSquare1x } from 'game/constants/effectiveRadius.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
 
 type TProps = {
   game: Game;
@@ -19,6 +20,7 @@ export default class Nexus extends DefenderObject {
       maxTargets: 1,
       name: 'Nexus',
       id: ENTITY_ID.STAR,
+      elementType: ELEMENT_TYPE.UNKOWN,
       game,
       isProjection: false,
       effectiveRadius: radiusSquare1x,

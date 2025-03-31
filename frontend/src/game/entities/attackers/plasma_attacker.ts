@@ -11,6 +11,9 @@ type TProps = {
 };
 
 export default class PlasmaAttacker extends AttackerObject {
+  shieldHp: number;
+  maxShieldHp: number;
+
   constructor({ game, position }: TProps) {
     super({
       id: ENTITY_ID.BASIC_ENEMY,
@@ -18,11 +21,38 @@ export default class PlasmaAttacker extends AttackerObject {
       position,
       game,
     });
+    this.shieldHp = 300;
+    this.maxShieldHp = 300;
   }
 
   draw(context: any) {
     drawDiamond(context, this, COLOR.PURPLE);
     drawHpBar(context, this);
+
+    const radius = 9;
+    context.beginPath();
+    context.arc(
+      this.gameObject.position.x + 6,
+      this.gameObject.position.y + 6,
+      radius,
+      0,
+      Math.PI * 2,
+    );
+    context.strokeStyle = COLOR.BLACK;
+    context.lineWidth = 1;
+    context.stroke();
+
+    context.beginPath();
+    context.arc(
+      this.gameObject.position.x + 6,
+      this.gameObject.position.y + 6,
+      radius,
+      0,
+      Math.PI * 2 * (this.shieldHp / this.maxShieldHp),
+    );
+    context.strokeStyle = COLOR.PURPLE;
+    context.lineWidth = 1;
+    context.stroke();
   }
 
   update(_deltaTime: number) {

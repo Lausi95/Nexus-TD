@@ -13,7 +13,7 @@ type TProps = {
 };
 
 export default class ElectricDefender extends DefenderObject {
-  chainLightningRadius: number = 40 * 40;
+  chainLightningRadius: number = 100 * 100;
 
   constructor({ game, placeholderPosition, isProjection = false }: TProps) {
     super({
@@ -34,7 +34,7 @@ export default class ElectricDefender extends DefenderObject {
     }
 
     // collect positions
-    context.lineWidth = 1;
+    context.lineWidth = 2;
     context.strokeStyle = COLOR.YELLOW;
     const positions = [
       [this.gameObject.position.x + 20, this.gameObject.position.y + 20],
@@ -47,7 +47,6 @@ export default class ElectricDefender extends DefenderObject {
     });
 
     for (let i = 0; i < positions.length - 1; i++) {
-      context.beginPath();
       let currentPosition = positions[i];
       const targetPosition = positions[i + 1];
 
@@ -79,6 +78,7 @@ export default class ElectricDefender extends DefenderObject {
           currentPosition[1] + normalized[1],
         ];
 
+        context.beginPath();
         context.moveTo(currentPosition[0], currentPosition[1]);
         context.lineTo(nextPosition[0], nextPosition[1]);
         context.stroke();
@@ -90,6 +90,8 @@ export default class ElectricDefender extends DefenderObject {
       context.moveTo(currentPosition[0], currentPosition[1]);
       context.lineTo(targetPosition[0], targetPosition[1]);
       context.stroke();
+
+      context.lineWidth = 1;
     }
 
     context.fillStyle = COLOR.YELLOW;

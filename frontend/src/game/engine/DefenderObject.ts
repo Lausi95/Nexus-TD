@@ -2,8 +2,13 @@ import { ENTITY_ID } from '../enum/entitiy_id';
 import Game from 'game/engine/Game.ts';
 import { DefenderInspectionDetails } from 'game/types/InspectionDetails.ts';
 import AttackerObject from 'game/engine/AttackerObject.ts';
-import { drawAttackArea, isEnemyInAttackRange } from 'utils/targetDetection.ts';
-import { radiusSquare1x } from 'game/enum/effectiveRadius.ts';
+import {
+  drawAttackArea,
+  getPrioritizedAttackers,
+  isEnemyInAttackRange,
+  PriorityMode,
+} from 'utils/targetDetection.ts';
+import { radiusSquare1x } from 'game/constants/effectiveRadius.ts';
 import { EffectiveRadius } from 'game/types/EffectiveRadius.ts';
 import { COLOR } from 'game/enum/colors.ts';
 import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
@@ -109,8 +114,9 @@ export default abstract class DefenderObject {
   drawTargetTracing(
     context: CanvasRenderingContext2D,
     color: string = COLOR.PRIMARY,
+    lineWidth: number = 1,
   ) {
-    context.lineWidth = 1; // Set line width
+    context.lineWidth = lineWidth;
     context.strokeStyle = color;
     this.enemiesTargeted.forEach((enemy) => {
       context.beginPath();
@@ -135,14 +141,22 @@ export default abstract class DefenderObject {
     };
   }
 
-  targetAndDamageEnemies(callbackEffect?: () => void) {
+  targetAndDamageEnemies(props?: {
+    callbackEffect?: () => void;
+    priortise?: {
+      mode: PriorityMode;
+      preferredElement?: ELEMENT_TYPE;
+    };
+  }) {
     // Calculate targeted enemies
     const newArray: AttackerObject[] = [];
-    this.gameObject.game.attackerObjects.forEach((gameObj) => {
-      if (
-        newArray.length < this.gameObject.maxTargets &&
-        gameObj.gameObject.id === ENTITY_ID.BASIC_ENEMY
-      ) {
+    const prioritizedAttackers = getPrioritizedAttackers(
+      this.gameObject.game.attackerObjects,
+      props?.priortise?.mode,
+      props?.priortise?.preferredElement,
+    );
+    prioritizedAttackers.forEach((gameObj) => {
+      if (newArray.length < this.gameObject.maxTargets) {
         if (
           isEnemyInAttackRange(
             this.gameObject.effectiveRadius,
@@ -156,7 +170,7 @@ export default abstract class DefenderObject {
     });
     this.enemiesTargeted = newArray;
 
-    this.damageEnemies(callbackEffect);
+    this.damageEnemies(props?.callbackEffect);
   }
 
   damageEnemies(callbackEffect?: () => void) {
@@ -166,6 +180,9 @@ export default abstract class DefenderObject {
       this.lastAttackTimestamp + 1000 / this.gameObject.attackSpeed
     ) {
       this.lastAttackTimestamp = this.gameObject.game.now;
+      if (this.enemiesTargeted.length === 0) {
+        return;
+      }
       this.enemiesTargeted.forEach((enemy) => {
         enemy.gameObject.hp = Math.max(
           0,

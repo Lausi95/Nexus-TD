@@ -57,7 +57,7 @@ export const drawHpBar = (
     const barWidth = 20; // full width of HP bar
     const barHeight = 3; // thin bar height
     const x = position.x - barWidth / 2 + 5;
-    const y = position.y - 6;
+    const y = position.y - 8;
 
     const filledWidth = barWidth * percent;
 

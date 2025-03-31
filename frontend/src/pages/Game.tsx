@@ -120,10 +120,6 @@ const Game: React.FC = () => {
               gap: 1,
             }}
           >
-              <GameButton
-                  text={'Unkown'}
-                  onClick={() => handleAddTurret(ELEMENT_TYPE.UNKOWN)}
-              />
             <GameButton
               text={'Fire Defender'}
               onClick={() => handleAddTurret(ELEMENT_TYPE.FIRE)}

@@ -86,7 +86,10 @@ export default abstract class AttackerObject {
     let calculatedVelocity = this.gameObject.velocity;
 
     // Consider if the attacker is slowed down
-    if (this.gameObject.game.now - this.lastTimeFreezed < 1000) {
+    if (
+      this.gameObject.elementType !== ELEMENT_TYPE.ICE &&
+      this.gameObject.game.now - this.lastTimeFreezed < 1000
+    ) {
       calculatedVelocity = this.gameObject.velocity / 2;
       if (this.gameObject.elementType === ELEMENT_TYPE.ELECTRIC) {
         calculatedVelocity = this.gameObject.velocity / 3;

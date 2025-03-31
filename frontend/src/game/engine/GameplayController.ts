@@ -6,6 +6,8 @@ import store from 'redux/store.ts';
 import { setInspectedDefender } from 'redux/slices/gameSlice.ts';
 import { DEFENDERS } from 'game/enum/defenders.ts';
 import FlamethrowerDefener from 'game/entities/defenders/flamethrower_defender.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
+import IceDefender from 'game/entities/defenders/ice_defender.ts';
 
 type TProps = {
   game: Game;
@@ -80,17 +82,23 @@ export default class GameplayController {
     this.game.emptyReset();
   }
 
-  requestAddTurret(defender: DEFENDERS = DEFENDERS.BASIC) {
+  requestAddTurret(element: ELEMENT_TYPE = ELEMENT_TYPE.UNKOWN) {
     this.shouldAddTurret = true;
     this.selectedTurret = null;
-    if (defender === DEFENDERS.BASIC) {
+    if (element === ELEMENT_TYPE.UNKOWN) {
       this.game.projection = new BasicDefender({
         game: this.game,
         placeholderPosition: [-100, -100],
         isProjection: true,
       });
-    } else if (defender === DEFENDERS.FLAMETHROWER) {
+    } else if (element === ELEMENT_TYPE.FIRE) {
       this.game.projection = new FlamethrowerDefener({
+        game: this.game,
+        placeholderPosition: [-100, -100],
+        isProjection: true,
+      });
+    } else if (element === ELEMENT_TYPE.ICE) {
+      this.game.projection = new IceDefender({
         game: this.game,
         placeholderPosition: [-100, -100],
         isProjection: true,
@@ -120,6 +128,13 @@ export default class GameplayController {
       } else if (this.game.projection instanceof FlamethrowerDefener) {
         this.game.defenderObjects.push(
           new FlamethrowerDefener({
+            game: this.game,
+            placeholderPosition: gridXY,
+          }),
+        );
+      } else if (this.game.projection instanceof IceDefender) {
+        this.game.defenderObjects.push(
+          new IceDefender({
             game: this.game,
             placeholderPosition: gridXY,
           }),

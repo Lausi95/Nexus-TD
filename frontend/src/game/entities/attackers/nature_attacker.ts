@@ -21,11 +21,7 @@ export default class NatureAttacker extends AttackerObject {
   }
 
   draw(context: any) {
-    drawDiamond(
-      context,
-      [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.GREEN,
-    );
+    drawDiamond(context, this, COLOR.GREEN);
     drawHpBar(context, this);
   }
 

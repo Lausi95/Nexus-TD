@@ -21,11 +21,7 @@ export default class PlasmaAttacker extends AttackerObject {
   }
 
   draw(context: any) {
-    drawDiamond(
-      context,
-      [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.PURPLE,
-    );
+    drawDiamond(context, this, COLOR.PURPLE);
     drawHpBar(context, this);
   }
 

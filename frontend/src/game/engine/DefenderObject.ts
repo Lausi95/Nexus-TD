@@ -56,7 +56,7 @@ export default abstract class DefenderObject {
       },
       name: props.name ?? 'DEFAULT TURRET',
       maxTargets: props.maxTargets ?? 100,
-      attackSpeed: props.attackSpeed ?? 3,
+      attackSpeed: props.attackSpeed ?? 4,
       damage: props.damage ?? 10,
       cost: props.cost ?? 10,
       effectiveRadius: props.effectiveRadius ?? radiusSquare1x,
@@ -135,7 +135,7 @@ export default abstract class DefenderObject {
     };
   }
 
-  targetAndDamageEnemies() {
+  targetAndDamageEnemies(callbackEffect?: () => void) {
     // Calculate targeted enemies
     const newArray: AttackerObject[] = [];
     this.gameObject.game.attackerObjects.forEach((gameObj) => {
@@ -168,6 +168,10 @@ export default abstract class DefenderObject {
           enemy.gameObject.hp - getElementalDamage(this, enemy),
         );
       });
+      // Callback upon hitting enemies
+      if (callbackEffect) {
+        callbackEffect();
+      }
     }
   }
 }

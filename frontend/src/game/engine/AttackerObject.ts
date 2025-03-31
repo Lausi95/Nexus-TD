@@ -48,6 +48,7 @@ type ConstructorProps = Omit<TProps, OptionalKeys> & {
 export default abstract class AttackerObject {
   gameObject: TProps;
   lastTimeCheck: number;
+  lastTimeFreezed: number;
 
   protected constructor(props: ConstructorProps) {
     this.gameObject = {
@@ -63,6 +64,7 @@ export default abstract class AttackerObject {
       nextTrack: props.nextTrack ?? null,
     };
     this.lastTimeCheck = props.game.now;
+    this.lastTimeFreezed = 0;
   }
 
   abstract update(deltaTime: number): void;
@@ -81,7 +83,16 @@ export default abstract class AttackerObject {
     const elapsedSeconds =
       (this.gameObject.game.now - this.lastTimeCheck) / 1000;
     this.lastTimeCheck = this.gameObject.game.now;
-    const distance = elapsedSeconds * this.gameObject.velocity;
+    let calculatedVelocity = this.gameObject.velocity;
+
+    // Consider if the attacker is slowed down
+    if (this.gameObject.game.now - this.lastTimeFreezed < 1000) {
+      calculatedVelocity = this.gameObject.velocity / 2;
+      if (this.gameObject.elementType === ELEMENT_TYPE.ELECTRIC) {
+        calculatedVelocity = this.gameObject.velocity / 3;
+      }
+    }
+    const distance = elapsedSeconds * calculatedVelocity;
 
     if (this.gameObject.hp <= 0) {
       this.destruct();

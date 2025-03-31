@@ -3,11 +3,16 @@ import AttackerObject from 'game/engine/AttackerObject.ts';
 
 export const drawDiamond = (
   context: CanvasRenderingContext2D,
-  center: [number, number],
+  attacker: AttackerObject,
+  // center: [number, number],
   color?: string,
 ) => {
   const width = 14;
   const height = 14;
+  const center = [
+    attacker.gameObject.position.x,
+    attacker.gameObject.position.y,
+  ];
   const [cx, cy] = [center[0] + 6, center[1] + 6];
   const halfW = width / 2;
   const halfH = height / 2;
@@ -27,7 +32,11 @@ export const drawDiamond = (
   context.closePath();
 
   context.fillStyle = color || COLOR.WHITE;
-  context.strokeStyle = 'black';
+  if (attacker.gameObject.game.now - attacker.lastTimeFreezed < 1000) {
+    context.strokeStyle = COLOR.PORTAL_BLUE;
+  } else {
+    context.strokeStyle = COLOR.BLACK;
+  }
   context.lineWidth = 1;
 
   context.fill();

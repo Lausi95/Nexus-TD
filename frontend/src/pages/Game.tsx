@@ -11,7 +11,7 @@ import { RootState } from 'redux/store.ts';
 import { useSelector } from 'react-redux';
 import GameButton from 'components/GameButton';
 import InspectPanel from 'components/InspectPanel';
-import { DEFENDERS } from 'game/enum/defenders.ts';
+import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
@@ -41,8 +41,8 @@ const Game: React.FC = () => {
     navigate('/home');
   };
 
-  const handleAddTurret = (defender?: DEFENDERS) => {
-    game.gameplayController.requestAddTurret(defender);
+  const handleAddTurret = (element?: ELEMENT_TYPE) => {
+    game.gameplayController.requestAddTurret(element);
   };
 
   const handleSendWave = () => {
@@ -121,14 +121,17 @@ const Game: React.FC = () => {
             }}
           >
             <GameButton
-              text={'Turret A'}
-              onClick={() => handleAddTurret(DEFENDERS.BASIC)}
+              text={'Unkown'}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.UNKOWN)}
             />
             <GameButton
-              text={'Turret B'}
-              onClick={() => handleAddTurret(DEFENDERS.FLAMETHROWER)}
+              text={'Fire'}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.FIRE)}
             />
-            <GameButton text={'Turret C'} onClick={handleAddTurret} />
+            <GameButton
+              text={'Ice'}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.ICE)}
+            />
             <GameButton text={'Turret D'} onClick={handleAddTurret} />
           </Box>
         </Box>

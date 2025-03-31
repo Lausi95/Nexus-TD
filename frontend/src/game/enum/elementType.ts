@@ -5,5 +5,5 @@ export enum ELEMENT_TYPE {
   NATURE = 'NATURE',
   STONE = 'STONE',
   ELECTRIC = 'ELECTRIC',
-  PLASMA = 'FIRE',
+  PLASMA = 'PLASMA',
 }

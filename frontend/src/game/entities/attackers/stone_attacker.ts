@@ -21,11 +21,7 @@ export default class StoneAttacker extends AttackerObject {
   }
 
   draw(context: any) {
-    drawDiamond(
-      context,
-      [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.LIGHT_GREY,
-    );
+    drawDiamond(context, this, COLOR.LIGHT_GREY);
     drawHpBar(context, this);
   }
 

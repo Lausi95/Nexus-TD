@@ -21,11 +21,7 @@ export default class FireAttacker extends AttackerObject {
   }
 
   draw(context: any) {
-    drawDiamond(
-      context,
-      [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.ORANGE,
-    );
+    drawDiamond(context, this, COLOR.ORANGE);
     drawHpBar(context, this);
   }
 

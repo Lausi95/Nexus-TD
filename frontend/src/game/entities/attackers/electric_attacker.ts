@@ -23,11 +23,7 @@ export default class ElectricAttack extends AttackerObject {
   }
 
   draw(context: any) {
-    drawDiamond(
-      context,
-      [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.YELLOW,
-    );
+    drawDiamond(context, this, COLOR.YELLOW);
     drawHpBar(context, this);
   }
 

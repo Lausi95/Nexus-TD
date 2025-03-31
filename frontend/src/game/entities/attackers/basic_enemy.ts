@@ -21,11 +21,7 @@ export default class BasicEnemy extends AttackerObject {
   }
 
   draw(context: any) {
-    drawDiamond(
-      context,
-      [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.WHITE,
-    );
+    drawDiamond(context, this, COLOR.WHITE);
     drawHpBar(context, this);
   }
 

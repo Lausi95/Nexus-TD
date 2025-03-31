@@ -21,11 +21,7 @@ export default class IceAttacker extends AttackerObject {
   }
 
   draw(context: any) {
-    drawDiamond(
-      context,
-      [this.gameObject.position.x, this.gameObject.position.y],
-      COLOR.LIGHT_BLUE,
-    );
+    drawDiamond(context, this, COLOR.LIGHT_BLUE);
     drawHpBar(context, this);
   }
 

@@ -146,10 +146,66 @@ export const radiusCross1x: EffectiveRadius = [
   [-1, 0],
   [0, -1],
 ];
+
 export const radiusCross2x: EffectiveRadius = [
   ...radiusCross1x,
   [2, 0],
   [0, 2],
   [-2, 0],
   [0, -2],
+];
+
+export const radiusStoneRight: EffectiveRadius = [
+  [3, 1],
+  [3, 0],
+  [3, -1],
+  [4, 1],
+  [4, 0],
+  [4, -1],
+  [5, 1],
+  [5, 0],
+  [5, -1],
+];
+
+export const radiusStoneLeft: EffectiveRadius = [
+  [-3, 1],
+  [-3, 0],
+  [-3, -1],
+  [-4, 1],
+  [-4, 0],
+  [-4, -1],
+  [-5, 1],
+  [-5, 0],
+  [-5, -1],
+];
+
+export const radiusStoneBottom: EffectiveRadius = [
+  [1, 3],
+  [0, 3],
+  [-1, 3],
+  [1, 4],
+  [0, 4],
+  [-1, 4],
+  [1, 5],
+  [0, 5],
+  [-1, 5],
+];
+
+export const radiusStoneTop: EffectiveRadius = [
+  [1, -3],
+  [0, -3],
+  [-1, -3],
+  [1, -4],
+  [0, -4],
+  [-1, -4],
+  [1, -5],
+  [0, -5],
+  [-1, -5],
+];
+
+export const radiusStoneTower: EffectiveRadius = [
+  ...radiusStoneLeft,
+  ...radiusStoneTop,
+  ...radiusStoneRight,
+  ...radiusStoneBottom,
 ];

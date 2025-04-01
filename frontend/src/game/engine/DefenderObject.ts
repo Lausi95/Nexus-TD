@@ -171,10 +171,12 @@ export default abstract class DefenderObject {
   /**
    * Finds all attackers, which are in the are of effect of the defender.
    */
-  getAttackersInRange(): AttackerObject[] {
+  getAttackersInRange(
+    radius: EffectiveRadius = this.gameObject.effectiveRadius,
+  ): AttackerObject[] {
     return this.gameObject.game.attackerObjects.filter((attacker) =>
       isEnemyInAttackRange(
-        this.gameObject.effectiveRadius,
+        radius,
         [this.gameObject.position.x, this.gameObject.position.y],
         [attacker.gameObject.position.x, attacker.gameObject.position.y],
       ),

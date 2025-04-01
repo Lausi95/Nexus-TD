@@ -3,7 +3,15 @@ import { COLOR } from 'game/enum/colors.ts';
 import Game from 'game/engine/Game.ts';
 import DefenderObject from 'game/engine/DefenderObject.ts';
 import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
-import { XY } from 'game/types/XY';
+import {
+  addXY,
+  lengthXY,
+  mulXY,
+  normalizeXY,
+  randomXY,
+  subXY,
+  XY,
+} from 'game/types/XY';
 import AttackerObject from 'game/engine/AttackerObject';
 import { isEnemyInAttackRange } from 'utils/targetDetection';
 import { radiusSquare3x } from 'game/constants/effectiveRadius';
@@ -88,22 +96,22 @@ export default class NatureDefender extends DefenderObject {
       }
 
       // move and rotate projectile to target direction
-      const vecToTarget = subVec2(
+      const vecToTarget = subXY(
         projectile.target.gameObject.position,
         projectile.position,
       );
 
-      const direction = normalizeVec2(vecToTarget);
+      const direction = normalizeXY(vecToTarget);
 
-      projectile.position = addVec2(
+      projectile.position = addXY(
         projectile.position,
-        mulVec2(direction, projectile.velocity * dt),
+        mulXY(direction, projectile.velocity * dt),
       );
 
       projectile.velocity = projectile.velocity + projectile.acceleration * dt;
 
       // remove projectile if close to enemy and apply damage
-      if (lengthVec2(vecToTarget) < 10) {
+      if (lengthXY(vecToTarget) < 10) {
         this.enemiesTargeted.push(projectile.target);
         deadProjectiles.push(projectile);
       }
@@ -130,7 +138,7 @@ export default class NatureDefender extends DefenderObject {
   }
 
   spawnProjectile(target: AttackerObject) {
-    const offset = mulVec2(randomVec2(), 6);
+    const offset = mulXY(randomXY(), 6);
     const projectile: NatureProjectile = {
       target: target,
       position: {
@@ -152,58 +160,6 @@ export default class NatureDefender extends DefenderObject {
       ),
     );
   }
-}
-
-/**
- * Normalizes a vector.
- * Normalized means, that the length of the vector is 1.
- */
-function normalizeVec2(vec: XY): XY {
-  const length = lengthVec2(vec);
-  return { x: vec.x / length, y: vec.y / length };
-}
-
-/**
- * Adds two vectors and returns the vector sum.
- */
-function addVec2(vec1: XY, vec2: XY): XY {
-  return { x: vec1.x + vec2.x, y: vec1.y + vec2.y };
-}
-
-/**
- * Subtracts two vectors and returns the vector difference.
- */
-function subVec2(vec1: XY, vec2: XY): XY {
-  return { x: vec1.x - vec2.x, y: vec1.y - vec2.y };
-}
-
-/**
- * Determines the length of a vector and returns the length.
- */
-function lengthVec2(vec: XY): number {
-  return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
-}
-
-/**
- * Multiplies the vector with a factor and returns the resulting vector.
- */
-function mulVec2(vec: XY, factor: number): XY {
-  return {
-    x: vec.x * factor,
-    y: vec.y * factor,
-  };
-}
-
-/**
- * Creates a new random normalized vector.
- * Normalized means, that the length of the vector is 1.
- */
-function randomVec2(): XY {
-  const random = Math.random() * 2 * Math.PI;
-  return {
-    x: Math.sin(random),
-    y: Math.cos(random),
-  };
 }
 
 /**

@@ -148,29 +148,37 @@ export default abstract class DefenderObject {
       preferredElement?: ELEMENT_TYPE;
     };
   }) {
-    // Calculate targeted enemies
-    const newArray: AttackerObject[] = [];
-    const prioritizedAttackers = getPrioritizedAttackers(
-      this.gameObject.game.attackerObjects,
+    this.targetEnemies(props);
+    this.damageEnemies(props?.callbackEffect);
+  }
+
+  /**
+   * Default behavior to target enemies.
+   */
+  targetEnemies(props?: {
+    priortise?: {
+      mode: PriorityMode;
+      preferredElement?: ELEMENT_TYPE;
+    };
+  }) {
+    this.enemiesTargeted = getPrioritizedAttackers(
+      this.getAttackersInRange(),
       props?.priortise?.mode,
       props?.priortise?.preferredElement,
-    );
-    prioritizedAttackers.forEach((gameObj) => {
-      if (newArray.length < this.gameObject.maxTargets) {
-        if (
-          isEnemyInAttackRange(
-            this.gameObject.effectiveRadius,
-            [this.gameObject.position.x, this.gameObject.position.y],
-            [gameObj.gameObject.position.x, gameObj.gameObject.position.y],
-          )
-        ) {
-          newArray.push(gameObj);
-        }
-      }
-    });
-    this.enemiesTargeted = newArray;
+    ).slice(0, this.gameObject.maxTargets);
+  }
 
-    this.damageEnemies(props?.callbackEffect);
+  /**
+   * Finds all attackers, which are in the are of effect of the defender.
+   */
+  getAttackersInRange(): AttackerObject[] {
+    return this.gameObject.game.attackerObjects.filter((attacker) =>
+      isEnemyInAttackRange(
+        this.gameObject.effectiveRadius,
+        [this.gameObject.position.x, this.gameObject.position.y],
+        [attacker.gameObject.position.x, attacker.gameObject.position.y],
+      ),
+    );
   }
 
   damageEnemies(callbackEffect?: () => void) {

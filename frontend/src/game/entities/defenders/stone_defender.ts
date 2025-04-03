@@ -12,6 +12,7 @@ import {
 } from 'game/constants/effectiveRadius';
 import { addXY, lengthXY, mulXY, normalizeXY, subXY, XY } from 'game/types/XY';
 import { EffectiveRadius } from 'game/types/EffectiveRadius';
+import { TILE_SIZE } from 'game/constants';
 
 type TProps = {
   game: Game;
@@ -19,14 +20,53 @@ type TProps = {
   isProjection?: boolean;
 };
 
+const PROJECTILE_MIN_WIDTH = 5;
+const PROJECTILE_MAX_WIDTH = 20;
+const PROJECTILE_WIDTH_DIFFERENCE = PROJECTILE_MAX_WIDTH - PROJECTILE_MIN_WIDTH;
+const STONE_TOWER_RANGE = 4;
+
+type TargetArea = {
+  effectiveRadius: EffectiveRadius;
+  targetVector: XY;
+};
+
+const STONE_TOWER_TARGET_AREAS: TargetArea[] = [
+  {
+    effectiveRadius: radiusStoneRight,
+    targetVector: {
+      x: STONE_TOWER_RANGE * TILE_SIZE,
+      y: 0,
+    },
+  },
+  {
+    effectiveRadius: radiusStoneLeft,
+    targetVector: {
+      x: -STONE_TOWER_RANGE * TILE_SIZE,
+      y: 0,
+    },
+  },
+  {
+    effectiveRadius: radiusStoneBottom,
+    targetVector: {
+      x: 0,
+      y: STONE_TOWER_RANGE * TILE_SIZE,
+    },
+  },
+  {
+    effectiveRadius: radiusStoneTop,
+    targetVector: {
+      x: 0,
+      y: -STONE_TOWER_RANGE * TILE_SIZE,
+    },
+  },
+];
+
 type StoneProjectile = {
   position: XY;
   velocity: XY;
   acceleration: number;
   target: XY;
   totalDistance: number;
-  minWidth: number;
-  maxWidth: number;
   width: number;
   targetArea: EffectiveRadius;
 };
@@ -41,6 +81,8 @@ export default class StoneDefender extends DefenderObject {
   projectileInterval: number;
   lastProjectileTime: number;
   aoeEffects: AoeEffect[];
+  initialVelocityScalar: number;
+  accelerationScalar: number;
 
   constructor({ game, placeholderPosition, isProjection = false }: TProps) {
     super({
@@ -55,8 +97,10 @@ export default class StoneDefender extends DefenderObject {
     });
     this.projectiles = [];
     this.lastProjectileTime = 0;
-    this.projectileInterval = 2000;
+    this.projectileInterval = 3000;
     this.aoeEffects = [];
+    this.initialVelocityScalar = 30;
+    this.accelerationScalar = 20;
   }
 
   draw(context: any) {
@@ -64,6 +108,12 @@ export default class StoneDefender extends DefenderObject {
       this.drawProjection(context);
     }
 
+    this.drawDefender(context);
+    this.drawAoeEffects(context);
+    this.drawProjectiles(context);
+  }
+
+  drawDefender(context: any) {
     context.fillStyle = COLOR.LIGHT_GREY;
     context.fillRect(
       this.gameObject.position.x + 10,
@@ -71,7 +121,9 @@ export default class StoneDefender extends DefenderObject {
       20,
       20,
     );
+  }
 
+  drawProjectiles(context: any) {
     for (const projectile of this.projectiles) {
       context.fillStyle = COLOR.LIGHT_GREY;
       context.fillRect(
@@ -90,12 +142,16 @@ export default class StoneDefender extends DefenderObject {
         projectile.width,
       );
     }
+  }
 
-    const aoeEffectWidth = 120;
+  drawAoeEffects(context: any) {
+    const aoeEffectWidth = TILE_SIZE * 3;
     for (const aoeEffect of this.aoeEffects) {
+      // prevents flickering frames
       if (aoeEffect.fade < 0) {
         continue;
       }
+
       context.fillStyle = COLOR.LIGHT_GREY;
       context.globalAlpha = aoeEffect.fade;
       context.fillRect(
@@ -110,40 +166,42 @@ export default class StoneDefender extends DefenderObject {
 
   update(_deltaTime: number) {
     const dt = _deltaTime / 1000;
+    this.updateProjectileSpawn();
+    this.updateProjectiles(dt);
+    this.updateAoeEffects(dt);
+  }
 
-    // spawn projectiles
-    const timeSinceLastProjectile =
-      this.gameObject.game.now - this.lastProjectileTime;
+  updateProjectileSpawn() {
+    const now = this.gameObject.game.now;
+    const timeSinceLastProjectile = now - this.lastProjectileTime;
     if (timeSinceLastProjectile > this.projectileInterval) {
-      const pos = addXY(this.gameObject.position, { x: 20, y: 20 });
-
-      if (this.getAttackersInRange(radiusStoneLeft).length > 0) {
-        const target = addXY(pos, { x: -4 * 40, y: 0 });
-        this.spawnProjectile(target, radiusStoneLeft);
-        this.lastProjectileTime = this.gameObject.game.now;
-      }
-
-      if (this.getAttackersInRange(radiusStoneRight).length > 0) {
-        const target = addXY(pos, { x: 4 * 40, y: 0 });
-        this.spawnProjectile(target, radiusStoneRight);
-        this.lastProjectileTime = this.gameObject.game.now;
-      }
-
-      if (this.getAttackersInRange(radiusStoneTop).length > 0) {
-        const target = addXY(pos, { x: 0, y: -4 * 40 });
-        this.spawnProjectile(target, radiusStoneTop);
-        this.lastProjectileTime = this.gameObject.game.now;
-      }
-
-      if (this.getAttackersInRange(radiusStoneBottom).length > 0) {
-        const target = addXY(pos, { x: 0, y: 4 * 40 });
-        this.spawnProjectile(target, radiusStoneBottom);
-        this.lastProjectileTime = this.gameObject.game.now;
+      for (const targetArea of STONE_TOWER_TARGET_AREAS) {
+        if (this.getAttackersInRange(targetArea.effectiveRadius).length > 0) {
+          const target = addXY(this.getCenter(), targetArea.targetVector);
+          this.spawnProjectile(target, targetArea.effectiveRadius);
+          this.lastProjectileTime = this.gameObject.game.now;
+        }
       }
     }
+  }
 
-    // update projectiles
+  updateProjectiles(dt: number) {
+    const projectilesToRemove: StoneProjectile[] = [];
     for (const projectile of this.projectiles) {
+      if (lengthXY(subXY(projectile.target, projectile.position)) < 5) {
+        this.aoeEffects.push({
+          position: projectile.position,
+          fade: 0.5,
+        });
+
+        this.enemiesTargeted = this.getAttackersInRange(projectile.targetArea);
+        this.damageEnemies();
+        this.enemiesTargeted = [];
+
+        projectilesToRemove.push(projectile);
+        continue;
+      }
+
       const dPosition = mulXY(projectile.velocity, dt);
       projectile.position = addXY(projectile.position, dPosition);
 
@@ -157,35 +215,17 @@ export default class StoneDefender extends DefenderObject {
       );
 
       projectile.width =
-        projectile.minWidth +
+        PROJECTILE_MIN_WIDTH +
         this.deltaWidth(
           projectile.totalDistance,
           targetVectorLength,
-          projectile.maxWidth - projectile.minWidth,
+          PROJECTILE_WIDTH_DIFFERENCE,
         );
     }
+    this.projectiles = arrayWithout(this.projectiles, projectilesToRemove);
+  }
 
-    const projectilesToRemove: StoneProjectile[] = [];
-    for (const projectile of this.projectiles) {
-      if (lengthXY(subXY(projectile.target, projectile.position)) > 5) {
-        continue;
-      }
-
-      this.aoeEffects.push({
-        position: projectile.position,
-        fade: 0.5,
-      });
-
-      this.enemiesTargeted = this.getAttackersInRange(projectile.targetArea);
-      this.damageEnemies();
-      this.enemiesTargeted = [];
-
-      projectilesToRemove.push(projectile);
-    }
-    this.projectiles = this.projectiles.filter(
-      (it) => !projectilesToRemove.includes(it),
-    );
-
+  updateAoeEffects(dt: number) {
     const aoeEffectToRemove: AoeEffect[] = [];
     for (const aoeEffect of this.aoeEffects) {
       if (aoeEffect.fade < 0.01) {
@@ -194,9 +234,7 @@ export default class StoneDefender extends DefenderObject {
       }
       aoeEffect.fade = aoeEffect.fade - 0.75 * dt;
     }
-    this.aoeEffects = this.aoeEffects.filter(
-      (it) => !aoeEffectToRemove.includes(it),
-    );
+    this.aoeEffects = arrayWithout(this.aoeEffects, aoeEffectToRemove);
   }
 
   /**
@@ -223,20 +261,41 @@ export default class StoneDefender extends DefenderObject {
   }
 
   spawnProjectile(target: XY, targetArea: EffectiveRadius) {
-    const startPosition = addXY(this.gameObject.position, { x: 20, y: 20 });
+    const startPosition = this.getCenter();
     const targetVector = subXY(target, startPosition);
-    const velocity = mulXY(normalizeXY(targetVector), 30);
+    const velocity = mulXY(
+      normalizeXY(targetVector),
+      this.initialVelocityScalar,
+    );
 
     this.projectiles.push({
       target,
-      acceleration: 20,
-      position: addXY(this.gameObject.position, { x: 20, y: 20 }),
+      acceleration: this.accelerationScalar,
+      position: startPosition,
       velocity: velocity,
       totalDistance: lengthXY(targetVector),
-      minWidth: 5,
-      maxWidth: 20,
-      width: 5,
+      width: PROJECTILE_MIN_WIDTH,
       targetArea,
     });
   }
+
+  /**
+   * Center point of the defender.
+   */
+  getCenter(): XY {
+    return addXY(this.gameObject.position, { x: 20, y: 20 });
+  }
+}
+
+/**
+ * Resolves an array of the first given array without the elements of
+ * the second given array.
+ *
+ * Basically does the cut operation.
+ *
+ * @param array Array to remove elements from
+ * @param excludingElements Array of elements to remove
+ */
+function arrayWithout<T>(array: T[], excludingElements: T[]): T[] {
+  return array.filter((it) => !excludingElements.includes(it));
 }

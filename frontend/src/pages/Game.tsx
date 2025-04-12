@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import GameButton from 'components/GameButton';
 import InspectPanel from 'components/InspectPanel';
 import { ELEMENT_TYPE } from 'game/enum/elementType.ts';
+import PurchasePanel from 'components/PurchasePanel';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
@@ -112,7 +113,6 @@ const Game: React.FC = () => {
             p: 1,
           }}
         >
-          {/*<PurchasePanel />*/}
           <Box
             sx={{
               display: 'grid',
@@ -122,33 +122,46 @@ const Game: React.FC = () => {
           >
             <GameButton
               text={'Basic Defender'}
+              bottomTab={COLOR.PRIMARY}
               onClick={() => handleAddTurret(ELEMENT_TYPE.UNKOWN)}
             />
             <GameButton
+              text={'Sonic Black Hole'}
+              bottomTab={COLOR.VENOM}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.BLACK_HOLE)}
+            />
+            <GameButton
               text={'Fire Defender'}
+              bottomTab={COLOR.ORANGE}
               onClick={() => handleAddTurret(ELEMENT_TYPE.FIRE)}
             />
             <GameButton
+              text={'Ice Defender'}
+              bottomTab={COLOR.PORTAL_BLUE}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.ICE)}
+            />
+            <GameButton
+              text={'Electric Defender'}
+              bottomTab={COLOR.YELLOW}
+              onClick={() => handleAddTurret(ELEMENT_TYPE.ELECTRIC)}
+            />
+            <GameButton
               text={'Nature Defender'}
+              bottomTab={COLOR.GREEN}
               onClick={() => handleAddTurret(ELEMENT_TYPE.NATURE)}
             />
             <GameButton
               text={'Stone Defender'}
+              bottomTab={COLOR.GREY}
               onClick={() => handleAddTurret(ELEMENT_TYPE.STONE)}
             />
             <GameButton
-              text={'Electric Defender'}
-              onClick={() => handleAddTurret(ELEMENT_TYPE.ELECTRIC)}
-            />
-            <GameButton
-              text={'Ice Defender'}
-              onClick={() => handleAddTurret(ELEMENT_TYPE.ICE)}
-            />
-            <GameButton
               text={'Plasma Defender'}
+              bottomTab={COLOR.PURPLE}
               onClick={() => handleAddTurret(ELEMENT_TYPE.PLASMA)}
             />
           </Box>
+          <PurchasePanel />
         </Box>
 
         <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', p: 1 }}>

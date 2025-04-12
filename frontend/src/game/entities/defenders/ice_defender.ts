@@ -42,14 +42,14 @@ export default class IceDefender extends DefenderObject {
       20,
       20,
     );
-    const offeset = (80 * this.pulseTimer) / 100;
+    const offset = (80 * this.pulseTimer) / 100;
     context.strokeStyle = COLOR.PORTAL_BLUE;
     context.globalAlpha = 0.4;
     context.strokeRect(
-      this.gameObject.position.x + 10 - offeset,
-      this.gameObject.position.y + 10 - offeset,
-      20 + offeset * 2,
-      20 + offeset * 2,
+      this.gameObject.position.x + 10 - offset,
+      this.gameObject.position.y + 10 - offset,
+      20 + offset * 2,
+      20 + offset * 2,
     );
     context.globalAlpha = 1;
   }

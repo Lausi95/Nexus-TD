@@ -1,5 +1,6 @@
 export enum ELEMENT_TYPE {
   UNKOWN = 'UNKOWN',
+  BLACK_HOLE = 'BLACK_HOLE',
   ICE = 'ICE',
   FIRE = 'FIRE',
   NATURE = 'NATURE',

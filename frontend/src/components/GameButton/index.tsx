@@ -10,6 +10,8 @@ type CustomButtonProps = {
   rounded?: boolean;
   disabled?: boolean;
   unthrottable?: boolean;
+  style?: React.CSSProperties;
+  bottomTab?: string;
   sx?: any;
 };
 
@@ -21,6 +23,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   disabled,
   rounded,
   unthrottable,
+  style,
+  bottomTab,
   sx,
 }) => {
   const [isThrottled, setIsThrottled] = useState(false);
@@ -45,9 +49,12 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     <Button
       className={styles.root}
       style={{
+        overflow: 'hidden',
         width: fullWidth ? '100%' : 'unset',
         borderRadius: rounded ? '99px' : '4px',
         opacity: disabled ? 0.5 : 1,
+        borderBottom: bottomTab ? `4px solid ${bottomTab}` : undefined,
+        ...style,
       }}
       onClick={handleClick}
       disabled={disabled || loading || isThrottled}
@@ -74,6 +81,18 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           />
         </Box>
       )}
+      {/*{bottomTab && (*/}
+      {/*  <Box*/}
+      {/*    sx={{*/}
+      {/*      position: 'absolute',*/}
+      {/*      bottom: 0,*/}
+      {/*      backgroundColor: bottomTab,*/}
+      {/*      width: '100%',*/}
+      {/*      height: 4,*/}
+      {/*      borderRadius: '0 0 4px 4px',*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*)}*/}
     </Button>
   );
 };

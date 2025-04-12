@@ -25,7 +25,7 @@ const PurchasePanel: React.FC<TProps> = () => {
     return (
       <Box
         sx={{
-          height: 60,
+          height: 160,
           border: '1px solid grey',
           borderRadius: '4px',
           px: 1,
@@ -43,7 +43,7 @@ const PurchasePanel: React.FC<TProps> = () => {
   return (
     <Box
       sx={{
-        height: 60,
+        height: 160,
         border: '1px solid grey',
         borderRadius: '4px',
         px: 1,
